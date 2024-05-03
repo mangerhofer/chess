@@ -38,4 +38,12 @@ public class ChessPosition {
         return col;
 //        throw new RuntimeException("Not implemented");
     }
+
+    public void setRow(int val) {
+        row = val;
+    }
+
+    public void setColumn(int val) {
+        col = val;
+    }
 }
