@@ -7,14 +7,18 @@ public class KnightMovesCalculator {
 
     private static final Collection<ChessMove> knightMoves = new ArrayList<>();
 
+    public KnightMovesCalculator() {
+
+    }
+
     public static Collection<ChessMove> validKnightMoves(ChessBoard board, ChessPosition position) {
         //creating array of all possible moves regardless of board space
         int[][] possMoves = {{1,2},{1,-2},{-1,2},{-1,-2},{2,-1},{-2,-1},{-2,1},{2,1}};
 
         ChessPiece piece = board.getPiece(position);
 
-        int x = position.getRow();
-        int y = position.getColumn();
+        int x = position.getColumn();
+        int y = position.getRow();
 
         // Finding possible moves for Knight and adding to collection
         for(int[] i: possMoves) {
@@ -32,4 +36,20 @@ public class KnightMovesCalculator {
         return knightMoves;
     }
 
+    @Override
+    public String toString() {
+        return "KnightMovesCalculator{" +
+                "knightMoves=" + knightMoves +
+                '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 }

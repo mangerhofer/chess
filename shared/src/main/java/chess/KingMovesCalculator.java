@@ -18,8 +18,8 @@ public class KingMovesCalculator {
 
         ChessPiece piece = board.getPiece(position);
 
-        int x = position.getRow() -1;
-        int y = position.getColumn() -1;
+        int x = position.getColumn() -1;
+        int y = position.getRow() -1;
 
         // Finding possible moves for King and adding to collection
         for(int[] i: possMoves) {
@@ -49,7 +49,7 @@ public class KingMovesCalculator {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         KingMovesCalculator that = (KingMovesCalculator) o;
-        return Objects.equals(kingMoves, that.kingMoves);
+        return Objects.equals(kingMoves, kingMoves);
     }
 
     @Override

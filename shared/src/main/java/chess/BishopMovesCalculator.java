@@ -6,14 +6,14 @@ import java.util.Objects;
 
 public class BishopMovesCalculator {
 
-    private Collection<ChessMove> moves = new ArrayList<ChessMove>();
+    private final Collection<ChessMove> bishopMoves = new ArrayList<>();
     private ChessPosition position;
 
     public BishopMovesCalculator() {
 
     }
 
-    public Collection<ChessMove> validBishopMoves(ChessBoard board, ChessPosition position) {
+    public static Collection<ChessMove> validBishopMoves(ChessBoard board, ChessPosition position) {
         if (Math.abs(this.position.getRow() - position.getRow()) == Math.abs(this.position.getColumn() - position.getColumn())) {
 
         }
@@ -21,7 +21,7 @@ public class BishopMovesCalculator {
 
 
 
-        return null;
+        return bishopMoves;
     }
 
     @Override
@@ -29,12 +29,12 @@ public class BishopMovesCalculator {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BishopMovesCalculator that = (BishopMovesCalculator) o;
-        return Objects.equals(moves, that.moves);
+        return Objects.equals(bishopMoves, that.bishopMoves);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(moves);
+        return Objects.hashCode(bishopMoves);
     }
 
 
