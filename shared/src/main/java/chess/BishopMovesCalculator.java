@@ -1,17 +1,32 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
 public class BishopMovesCalculator {
-    private Collection<ChessMove> moves;
 
-    public BishopMovesCalculator(Collection<ChessMove> moves) {
-        this.moves = moves;
+    private Collection<ChessMove> moves = new ArrayList<ChessMove>();
+    private ChessPosition position;
+
+    public BishopMovesCalculator() {
+
     }
 
-    public Collection<ChessMove> validBishopMoves(ChessPosition position) {
-        //
+    public Collection<ChessMove> validBishopMoves(ChessBoard board, ChessPosition position) {
+        if (Math.abs(this.position.getRow() - position.getRow()) == Math.abs(this.position.getColumn() - position.getColumn())) {
+
+        }
+//        if (move.getEndPosition() != null) {
+//            ChessPosition position = move.getEndPosition();
+//            ChessPiece otherPiece = ChessBoard  .getPiece(position);
+////            ChessGame.TeamColor other = piece.getTeamColor();
+//            if (other != piece.getTeamColor()) {
+//
+//            }
+        ChessPiece piece = board.getPiece(position);
+//        }
+
         return null;
     }
 
@@ -27,4 +42,6 @@ public class BishopMovesCalculator {
     public int hashCode() {
         return Objects.hashCode(moves);
     }
+
+
 }
