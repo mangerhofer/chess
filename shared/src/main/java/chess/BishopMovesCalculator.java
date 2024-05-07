@@ -17,15 +17,9 @@ public class BishopMovesCalculator {
         if (Math.abs(this.position.getRow() - position.getRow()) == Math.abs(this.position.getColumn() - position.getColumn())) {
 
         }
-//        if (move.getEndPosition() != null) {
-//            ChessPosition position = move.getEndPosition();
-//            ChessPiece otherPiece = ChessBoard  .getPiece(position);
-////            ChessGame.TeamColor other = piece.getTeamColor();
-//            if (other != piece.getTeamColor()) {
-//
-//            }
         ChessPiece piece = board.getPiece(position);
-//        }
+
+
 
         return null;
     }
