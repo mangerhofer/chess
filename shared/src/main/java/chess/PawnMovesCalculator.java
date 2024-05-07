@@ -5,7 +5,7 @@ import java.util.Collection;
 
 public class PawnMovesCalculator {
 
-    private final Collection<ChessMove> pawnMoves = new ArrayList<>();
+    private static final Collection<ChessMove> pawnMoves = new ArrayList<>();
 
     public PawnMovesCalculator() {
 
@@ -61,7 +61,7 @@ public class PawnMovesCalculator {
     }
 
     //creating method to avoid duplicating code for getting most common pawn moves
-    public void getPawnMoves(ChessBoard board, ChessPosition pos, ChessPosition pos1, ChessPosition pos2, ChessPosition pos3) {
+    public static void getPawnMoves(ChessBoard board, ChessPosition pos, ChessPosition pos1, ChessPosition pos2, ChessPosition pos3) {
         ChessMove move;
         ChessPiece piece = board.getPiece(pos);
         if (board.getPiece(pos1) == null) {

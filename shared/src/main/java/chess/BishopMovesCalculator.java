@@ -1,23 +1,57 @@
 package chess;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
 public class BishopMovesCalculator {
 
-    private final Collection<ChessMove> bishopMoves = new ArrayList<>();
-    private ChessPosition position;
+    private static final Collection<ChessMove> bishopMoves = new ArrayList<>();
 
     public BishopMovesCalculator() {
 
     }
 
     public static Collection<ChessMove> validBishopMoves(ChessBoard board, ChessPosition position) {
-        if (Math.abs(this.position.getRow() - position.getRow()) == Math.abs(this.position.getColumn() - position.getColumn())) {
-
-        }
         ChessPiece piece = board.getPiece(position);
+        int x = position.getColumn();
+        int y = position.getRow();
+
+        int topLeft = Math.min(x,y);
+        int topRight = Math.max(x, 7-y);
+        int bottomLeft = Math.min(7-x, y);
+        int bottomRight = Math.min(7-x, 7-y);
+
+        for (int i = 1; i <= topLeft; i++) {
+            ChessPosition point = new ChessPosition(x - i, y - i);
+            if (board.getPiece(point) == null || (board.getPiece(point) != null && board.getPiece(point).getTeamColor()!= piece.getTeamColor())) {
+                ChessMove move = new ChessMove(position, point, null);
+                bishopMoves.add(move);
+            }
+        }
+
+        for (int i = 1; i <= topRight; i++) {
+            ChessPosition point = new ChessPosition(x - i, y + i);
+            if (board.getPiece(point) == null || (board.getPiece(point) != null && board.getPiece(point).getTeamColor()!= piece.getTeamColor())) {
+                ChessMove move = new ChessMove(position, point, null);
+                bishopMoves.add(move);
+            }
+        }
+        for (int i = 1; i <= bottomLeft; i++) {
+            ChessPosition point = new ChessPosition(x + i, y - i);
+            if (board.getPiece(point) == null || (board.getPiece(point) != null && board.getPiece(point).getTeamColor()!= piece.getTeamColor())) {
+                ChessMove move = new ChessMove(position, point, null);
+                bishopMoves.add(move);
+            }
+        }
+        for (int i = 1; i <= bottomRight; i++) {
+            ChessPosition point = new ChessPosition(x + i, y + i);
+            if (board.getPiece(point) == null || (board.getPiece(point) != null && board.getPiece(point).getTeamColor()!= piece.getTeamColor())) {
+                ChessMove move = new ChessMove(position, point, null);
+                bishopMoves.add(move);
+            }
+        }
 
 
 
