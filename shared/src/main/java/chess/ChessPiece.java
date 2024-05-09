@@ -59,7 +59,7 @@ public class ChessPiece {
         if (piece.getPieceType() == ChessPiece.PieceType.KING) {
             moves = KingMovesCalculator.validKingMoves(board, myPosition);
         } else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN) {
-            return new ArrayList<>();
+            moves = QueenMovesCalculator.validQueenMoves(board, myPosition);
         } else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP) {
             moves = BishopMovesCalculator.validBishopMoves(board, myPosition);
         } else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
