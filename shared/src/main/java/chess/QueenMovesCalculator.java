@@ -7,6 +7,7 @@ public class QueenMovesCalculator {
     private static final Collection<ChessMove> queenMoves = new ArrayList<>();
 
     public static Collection<ChessMove> validQueenMoves(ChessBoard board, ChessPosition position) {
+        queenMoves.clear();
 
         queenMoves.addAll(BishopMovesCalculator.validBishopMoves(board, position));
         queenMoves.addAll(RookMovesCalculator.validRookMoves(board, position));
