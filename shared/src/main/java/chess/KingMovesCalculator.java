@@ -18,8 +18,8 @@ public class KingMovesCalculator {
 
         ChessPiece piece = board.getPiece(position);
 
-        int x = position.getColumn() -1;
-        int y = position.getRow() -1;
+        int x = position.getColumn();
+        int y = position.getRow();
 
         // Finding possible moves for King and adding to collection
         for(int[] i: possMoves) {

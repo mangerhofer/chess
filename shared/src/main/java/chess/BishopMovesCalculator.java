@@ -1,9 +1,7 @@
 package chess;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
 
 public class BishopMovesCalculator {
 
@@ -30,7 +28,6 @@ public class BishopMovesCalculator {
                 bishopMoves.add(move);
             }
         }
-
         for (int i = 1; i <= topRight; i++) {
             ChessPosition point = new ChessPosition(x - i, y + i);
             if (board.getPiece(point) == null || (board.getPiece(point) != null && board.getPiece(point).getTeamColor()!= piece.getTeamColor())) {
@@ -53,23 +50,22 @@ public class BishopMovesCalculator {
             }
         }
 
-
-
         return bishopMoves;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BishopMovesCalculator that = (BishopMovesCalculator) o;
-        return Objects.equals(bishopMoves, that.bishopMoves);
+    public String toString() {
+        return "BishopMovesCalculator{" +
+                "bishopMoves=" + bishopMoves +
+                '}';
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(bishopMoves);
-    }
-
 
 }
+
+//class PrintCheck {
+//    public static void main(String[] args) {
+//        ChessBoard board = new ChessBoard();
+//        ChessPosition position = new ChessPosition(5, 2);
+//        System.out.println(ChessBoard.resetBoard().toString());
+//    }
+//}
