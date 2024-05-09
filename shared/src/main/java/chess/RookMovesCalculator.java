@@ -12,42 +12,27 @@ public class RookMovesCalculator {
         int x = position.getColumn();
         int y = position.getRow();
 
-        int topLeft = Math.min(x,y);
-        int topRight = Math.max(x, 7-y);
-        int bottomLeft = Math.min(7-x, y);
-        int bottomRight = Math.min(7-x, 7-y);
-
-        for (int i = 1; i <= topLeft; i++) {
-            ChessPosition point = new ChessPosition(x - i, y - i);
-            if (board.getPiece(point) == null || (board.getPiece(point) != null && board.getPiece(point).getTeamColor()!= piece.getTeamColor())) {
-                ChessMove move = new ChessMove(position, point, null);
-                rookMoves.add(move);
+        // checking horizontal moves
+        for (int i = 0; i < 8; i++) {
+            if (y == i && x != i) {
+                ChessPosition nextPosition = new ChessPosition(x, i);
+                if (board.getPiece(nextPosition) == null || (board.getPiece(nextPosition) != null && board.getPiece(nextPosition).getTeamColor() != piece.getTeamColor())) {
+                    ChessMove move = new ChessMove(position, nextPosition, null);
+                    rookMoves.add(move);
+                }
             }
         }
 
-        for (int i = 1; i <= topRight; i++) {
-            ChessPosition point = new ChessPosition(x - i, y + i);
-            if (board.getPiece(point) == null || (board.getPiece(point) != null && board.getPiece(point).getTeamColor()!= piece.getTeamColor())) {
-                ChessMove move = new ChessMove(position, point, null);
-                rookMoves.add(move);
+        // checking vertical moves
+        for (int i = 0; i < 8; i++) {
+            if (x == i && y != i) {
+                ChessPosition nextPosition = new ChessPosition(x, i);
+                if (board.getPiece(nextPosition) == null || (board.getPiece(nextPosition) != null && board.getPiece(nextPosition).getTeamColor() != piece.getTeamColor())) {
+                    ChessMove move = new ChessMove(position, nextPosition, null);
+                    rookMoves.add(move);
+                }
             }
         }
-        for (int i = 1; i <= bottomLeft; i++) {
-            ChessPosition point = new ChessPosition(x + i, y - i);
-            if (board.getPiece(point) == null || (board.getPiece(point) != null && board.getPiece(point).getTeamColor()!= piece.getTeamColor())) {
-                ChessMove move = new ChessMove(position, point, null);
-                rookMoves.add(move);
-            }
-        }
-        for (int i = 1; i <= bottomRight; i++) {
-            ChessPosition point = new ChessPosition(x + i, y + i);
-            if (board.getPiece(point) == null || (board.getPiece(point) != null && board.getPiece(point).getTeamColor()!= piece.getTeamColor())) {
-                ChessMove move = new ChessMove(position, point, null);
-                rookMoves.add(move);
-            }
-        }
-
-
 
         return rookMoves;
     }

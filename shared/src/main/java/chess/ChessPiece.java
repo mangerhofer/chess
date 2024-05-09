@@ -65,7 +65,7 @@ public class ChessPiece {
         } else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
             moves = KnightMovesCalculator.validKnightMoves(board, myPosition);
         } else if (piece.getPieceType() == ChessPiece.PieceType.ROOK) {
-            return new ArrayList<>();
+            moves = RookMovesCalculator.validRookMoves(board, myPosition);
         } else if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
             moves = PawnMovesCalculator.validPawnMoves(board,myPosition);
         }
