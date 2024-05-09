@@ -9,8 +9,8 @@ public class RookMovesCalculator {
 
     public static Collection<ChessMove> validRookMoves(ChessBoard board, ChessPosition position) {
         ChessPiece piece = board.getPiece(position);
-        int x = position.getColumn();
-        int y = position.getRow();
+        int x = position.getRow();
+        int y = position.getColumn();
 
         // checking horizontal moves
         for (int i = 0; i < 8; i++) {
