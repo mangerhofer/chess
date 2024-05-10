@@ -39,7 +39,7 @@ public class PawnMovesCalculator {
                 ChessPosition newPos = new ChessPosition(x + 1, y);
                 ChessPosition newPos1 = new ChessPosition(x + 1, y + 1);
                 ChessPosition newPos2 = new ChessPosition(x + 1, y - 1);
-                whitePawnMoves(board, position, newPos, newPos1, newPos2);
+                getPawnMoves(board, position, newPos, newPos1, newPos2);
             } else if (position.getRow() == 7) {
                 ChessPosition newPos = new ChessPosition(x + 1, y);
                 ChessPosition newPos1 = new ChessPosition(x + 1, y + 1);
@@ -68,7 +68,7 @@ public class PawnMovesCalculator {
                 ChessPosition newPos = new ChessPosition(x - 1, y);
                 ChessPosition newPos1 = new ChessPosition(x - 1, y - 1);
                 ChessPosition newPos2 = new ChessPosition(x - 1, y + 1);
-                blackPawnMoves(board, position, newPos, newPos1, newPos2);
+                getPawnMoves(board, position, newPos, newPos1, newPos2);
             } else if (position.getRow() == 2) {
                 ChessPosition newPos = new ChessPosition(x - 1, y);
                 ChessPosition newPos1 = new ChessPosition(x - 1, y - 1);
@@ -78,21 +78,6 @@ public class PawnMovesCalculator {
         }
 
         return pawnMoves;
-    }
-
-    public static void whitePawnMoves(ChessBoard board, ChessPosition pos, ChessPosition pos1, ChessPosition pos2, ChessPosition pos3) {
-        ChessPiece piece = board.getPiece(pos);
-        if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-            getPawnMoves(board, pos, pos1, pos2, pos3);
-        }
-
-    }
-
-    public static void blackPawnMoves(ChessBoard board, ChessPosition pos, ChessPosition pos1, ChessPosition pos2, ChessPosition pos3) {
-        ChessPiece piece = board.getPiece(pos);
-        if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-            getPawnMoves(board, pos, pos1, pos2, pos3);
-        }
     }
 
     //creating method to avoid duplicating code for getting most common pawn moves
@@ -145,19 +130,6 @@ public class PawnMovesCalculator {
             pawnMoves.add(move);
             move = new ChessMove(pos, pos3, ChessPiece.PieceType.ROOK);
             pawnMoves.add(move);
-        }
-    }
-
-    public static void getPromotionMoves(ChessBoard board, ChessPosition pos, ChessPiece piece) {
-        switch (piece.getPieceType()) {
-            case KNIGHT:
-                pawnMoves.addAll(KnightMovesCalculator.validKnightMoves(board, pos));
-            case BISHOP:
-                pawnMoves.addAll(BishopMovesCalculator.validBishopMoves(board, pos));
-            case ROOK:
-                pawnMoves.addAll(RookMovesCalculator.validRookMoves(board, pos));
-            case QUEEN:
-                pawnMoves.addAll(QueenMovesCalculator.validQueenMoves(board, pos));
         }
     }
 

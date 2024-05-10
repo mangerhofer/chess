@@ -37,24 +37,4 @@ public class KingMovesCalculator {
 
         return kingMoves;
     }
-
-    @Override
-    public String toString() {
-        return "KingMovesCalculator{" +
-                "kingMoves=" + kingMoves +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        KingMovesCalculator that = (KingMovesCalculator) o;
-        return Objects.equals(kingMoves, kingMoves);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(kingMoves);
-    }
 }

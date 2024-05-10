@@ -89,11 +89,4 @@ public class BishopMovesCalculator {
         }
     }
 
-    @Override
-    public String toString() {
-        return "BishopMovesCalculator{" +
-                "bishopMoves=" + bishopMoves +
-                '}';
-    }
-
 }
