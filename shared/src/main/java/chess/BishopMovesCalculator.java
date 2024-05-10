@@ -16,15 +16,15 @@ public class BishopMovesCalculator {
         int x = position.getRow();
         int y = position.getColumn();
 
-        int topLeft = Math.min(x,y);
-        int topRight = Math.max(x, 7-y);
-        int bottomLeft = Math.min(7-x, y);
-        int bottomRight = Math.max(7-x, 7-y);
+        int bottomLeft = Math.min(x,y);
+        int bottomRight = Math.max(x, 7-y);
+        int topLeft = Math.min(7-x, y);
+        int topRight = Math.max(7-x, 7-y);
 
 
-        for (int i = 1; i <= bottomRight; i++) {
+        for (int i = 1; i <= topRight+1; i++) {
             ChessPosition point = new ChessPosition(x + i, y + i);
-            if (point.getRow() >= 1 && point.getColumn() >= 1) {
+            if (point.getRow() <= 8 && point.getColumn() <= 8) {
                 if (board.getPiece(point) == null) {
                     getBishopMoves(board, position, point);
                 } else if (board.getPiece(point) != null) {
@@ -35,7 +35,7 @@ public class BishopMovesCalculator {
                 break;
             }
         }
-        for (int i = 1; i <= bottomLeft+2; i++) {
+        for (int i = 1; i <= topLeft+2; i++) {
             ChessPosition point = new ChessPosition(x - i, y + i);
             if (point.getRow() >= 1 && point.getColumn() <= 8) {
                 if (board.getPiece(point) == null) {
@@ -48,7 +48,7 @@ public class BishopMovesCalculator {
                 break;
             }
         }
-        for (int i = 1; i < topLeft; i++) {
+        for (int i = 1; i < bottomLeft; i++) {
             ChessPosition point = new ChessPosition(x - i, y - i);
             if (point.getRow() <= 8 && point.getColumn() <= 8) {
                 if (board.getPiece(point) == null) {
@@ -61,7 +61,7 @@ public class BishopMovesCalculator {
                 break;
             }
         }
-        for (int i = 1; i < topRight-1; i++) {
+        for (int i = 1; i < bottomRight-1; i++) {
             ChessPosition point = new ChessPosition(x + i, y - i);
             if (point.getRow() <= 8 && point.getColumn() >= 1) {
                 if (board.getPiece(point) == null) {
