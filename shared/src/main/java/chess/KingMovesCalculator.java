@@ -20,7 +20,7 @@ public class KingMovesCalculator {
 
         // Finding possible moves for King and adding to collection
         for(int[] i: possMoves) {
-            if (i[0]+x <= 8 && i[1]+y <= 8 && i[0]+x >= 0 && i[1]+y >= 0) {
+            if (i[0]+x <= 8 && i[1]+y <= 8 && i[0]+x >= 1 && i[1]+y >= 1) {
                 ChessPosition newPos = new ChessPosition(i[0] + x, i[1] + y);
                 ChessMove move;
                 if (board.getPiece(newPos) != null && (board.getPiece(newPos).getTeamColor() != piece.getTeamColor()) ) {
