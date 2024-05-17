@@ -34,6 +34,22 @@ public class ChessPosition {
         return col;
     }
 
+    public static ChessPosition findKing(ChessBoard board) {
+        ChessPosition kingPos = null;
+
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                ChessPosition position = new ChessPosition(i, j);
+                if (board.getPiece(position) != null && board.getPiece(position).getPieceType() == ChessPiece.PieceType.KING) {
+                    kingPos = position;
+                    break;
+                }
+            }
+
+        }
+        return kingPos;
+    }
+
     @Override
     public String toString() {
         return "ChessPosition{" +

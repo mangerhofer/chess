@@ -1,5 +1,7 @@
 package chess;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -8,9 +10,14 @@ import java.util.Objects;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessBoard {
+public class ChessBoard implements Cloneable {
 
     private final ChessPiece[][] board = new ChessPiece[8][8];
+    private static final Collection<ChessMove> validMoves = new ArrayList<>();
+    private static final Collection<ChessMove> validWhiteMoves = new ArrayList<>();
+    private static final Collection<ChessMove> allMoves = new ArrayList<>();
+    private static final Collection<ChessMove> allWhiteMoves = new ArrayList<>();
+    private static final Collection<ChessMove> allBlackMoves = new ArrayList<>();
 
 
     public ChessBoard() {
@@ -77,6 +84,126 @@ public class ChessBoard {
 
     }
 
+    public static Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        ChessBoard board = ChessGame.getBoard();
+        ChessPiece piece = board.getPiece(startPosition);
+        ChessGame.TeamColor teamColor = piece.getTeamColor();
+        validMoves.clear();
+
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                ChessPosition newPosition = new ChessPosition(i, j);
+                if (board.getPiece(newPosition) != null) {
+                    //getting black piece moves
+                    if (board.getPiece(newPosition).getTeamColor() == ChessGame.TeamColor.BLACK) {
+                        allBlackMoves.addAll(getAllMoves(newPosition));
+                    }
+                    //getting white piece moves
+                    else if (board.getPiece(newPosition).getTeamColor() == ChessGame.TeamColor.WHITE) {
+                        allWhiteMoves.addAll(getAllMoves(newPosition));
+                    }
+                }
+            }
+        }
+
+        if (teamColor == ChessGame.TeamColor.BLACK) {
+            if (!board.isInCheck(teamColor)) {
+//                for (ChessMove move : allBlackMoves) {
+//                    validMoves.add(move);
+//                }
+//            } else {
+                validMoves.addAll(allBlackMoves);
+            }
+        }
+        else if (teamColor == ChessGame.TeamColor.WHITE) {
+            if (!board.isInCheck(teamColor)) {
+//                for (ChessMove move : allWhiteMoves) {
+//                    validMoves.add(move);
+//                }
+//            } else {
+                validMoves.addAll(allWhiteMoves);
+            }
+        }
+
+
+        return validMoves;
+    }
+
+    public static Collection<ChessMove> getAllMoves(ChessPosition startPosition) {
+        allMoves.clear();
+        ChessBoard board = ChessGame.getBoard();
+        ChessPiece piece = board.getPiece(startPosition);
+
+        if (piece.getPieceType() == ChessPiece.PieceType.KING)  {
+            allMoves.addAll(KingMovesCalculator.validKingMoves(board,startPosition));
+        }
+        if (piece.getPieceType() == ChessPiece.PieceType.QUEEN)  {
+            allMoves.addAll(QueenMovesCalculator.validQueenMoves(board,startPosition));
+        }
+        if (piece.getPieceType() == ChessPiece.PieceType.BISHOP) {
+            allMoves.addAll(BishopMovesCalculator.validBishopMoves(board,startPosition));
+        }
+        if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
+            allMoves.addAll(KnightMovesCalculator.validKnightMoves(board,startPosition));
+        }
+        if (piece.getPieceType() == ChessPiece.PieceType.ROOK) {
+            allMoves.addAll(RookMovesCalculator.validRookMoves(board,startPosition));
+        }
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            allMoves.addAll(PawnMovesCalculator.validPawnMoves(board,startPosition));
+        }
+
+        return allMoves;
+    }
+
+    public static void makeMove(ChessMove move) throws InvalidMoveException {
+        ChessPosition startPosition = move.getStartPosition();
+        ChessPosition endPosition = move.getEndPosition();
+        ChessPiece.PieceType promoPiece = move.getPromotionPiece();
+
+        ChessBoard board = ChessGame.getBoard();
+        validMoves(startPosition);
+
+        if (validMoves.contains(move)) {
+            ChessPiece piece = board.getPiece(startPosition);
+            board.addPiece(endPosition,piece);
+            board.addPiece(startPosition,null);
+        }
+    }
+
+    public boolean isInCheck(ChessGame.TeamColor teamColor) {
+        boolean inCheck = false;
+
+        ChessBoard board = ChessGame.getBoard();
+        ChessPosition kingPos = ChessPosition.findKing(board);
+
+        if (teamColor == ChessGame.TeamColor.BLACK) {
+            for (ChessMove move : allWhiteMoves) {
+                if (move.getEndPosition() == kingPos) {
+                    inCheck = true;
+                    break;
+                }
+            }
+        }
+        else if (teamColor == ChessGame.TeamColor.WHITE) {
+            for (ChessMove move : allBlackMoves) {
+                if (move.getEndPosition() == kingPos) {
+                    inCheck = true;
+                    break;
+                }
+            }
+        }
+        return inCheck;
+    }
+
+    public boolean isInCheckmate(ChessGame.TeamColor teamColor) {
+        throw new RuntimeException("Not implemented");
+    }
+
+    public boolean isInStalemate(ChessGame.TeamColor teamColor) {
+        throw new RuntimeException("Not implemented");
+    }
+
     @Override
     public String toString() {
         return "ChessBoard{" +
@@ -96,4 +223,14 @@ public class ChessBoard {
     public int hashCode() {
         return Arrays.deepHashCode(board);
     }
+
+//    @Override
+//    public ChessBoard clone() throws CloneNotSupportedException {
+//        ChessBoard clone = (ChessBoard) super.clone();
+//
+//        ChessBoard clonedBoard = (ChessBoard) ChessGame.getBoard().clone();
+//        ChessGame.setBoard(clonedBoard);
+//
+//        return clone;
+//    }
 }
