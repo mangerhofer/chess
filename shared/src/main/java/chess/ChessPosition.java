@@ -34,13 +34,29 @@ public class ChessPosition {
         return col;
     }
 
-    public static ChessPosition findKing(ChessBoard board) {
+    public ChessPosition findBlackKing(ChessBoard board) {
         ChessPosition kingPos = null;
 
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
                 ChessPosition position = new ChessPosition(i, j);
-                if (board.getPiece(position) != null && board.getPiece(position).getPieceType() == ChessPiece.PieceType.KING) {
+                if (board.getPiece(position) != null && board.getPiece(position).getPieceType() == ChessPiece.PieceType.KING && board.getPiece(position).getTeamColor() == ChessGame.TeamColor.BLACK) {
+                    kingPos = position;
+                    break;
+                }
+            }
+
+        }
+        return kingPos;
+    }
+
+    public ChessPosition findWhiteKing(ChessBoard board) {
+        ChessPosition kingPos = null;
+
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                ChessPosition position = new ChessPosition(i, j);
+                if (board.getPiece(position) != null && board.getPiece(position).getPieceType() == ChessPiece.PieceType.KING && board.getPiece(position).getTeamColor() == ChessGame.TeamColor.WHITE) {
                     kingPos = position;
                     break;
                 }

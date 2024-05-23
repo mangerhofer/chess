@@ -5,9 +5,9 @@ import java.util.Collection;
 
 public class MovesCalculator {
 
-    private static final Collection<ChessMove> pieceMoves = new ArrayList<>();
+    private final Collection<ChessMove> pieceMoves = new ArrayList<>();
 
-    public static Collection<ChessMove> kingAndKnightMoves(ChessBoard board, ChessPosition pos, int[][] possMoves) {
+    public Collection<ChessMove> kingAndKnightMoves(ChessBoard board, ChessPosition pos, int[][] possMoves) {
         pieceMoves.clear();
         ChessMove move;
         ChessPiece piece = board.getPiece(pos);
@@ -32,7 +32,7 @@ public class MovesCalculator {
         return pieceMoves;
     }
 
-    public static Collection<ChessMove> bishopAndRookMoves(ChessBoard board, ChessPosition pos, ChessPosition newPos) {
+    public Collection<ChessMove> bishopAndRookMoves(ChessBoard board, ChessPosition pos, ChessPosition newPos) {
         pieceMoves.clear();
         ChessMove move;
         ChessPiece piece = board.getPiece(pos);

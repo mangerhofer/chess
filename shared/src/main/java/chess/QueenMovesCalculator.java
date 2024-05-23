@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class QueenMovesCalculator {
-    private static final Collection<ChessMove> queenMoves = new ArrayList<>();
+    private final Collection<ChessMove> queenMoves = new ArrayList<>();
+    private BishopMovesCalculator bishopMoves = new BishopMovesCalculator();
+    private RookMovesCalculator rookMoves = new RookMovesCalculator();
 
-    public static Collection<ChessMove> validQueenMoves(ChessBoard board, ChessPosition position) {
+    public Collection<ChessMove> validQueenMoves(ChessBoard board, ChessPosition position) {
         queenMoves.clear();
 
-        queenMoves.addAll(BishopMovesCalculator.validBishopMoves(board, position));
-        queenMoves.addAll(RookMovesCalculator.validRookMoves(board, position));
+        queenMoves.addAll(bishopMoves.validBishopMoves(board, position));
+        queenMoves.addAll(rookMoves.validRookMoves(board, position));
 
         return queenMoves;
     }

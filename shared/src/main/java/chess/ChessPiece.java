@@ -14,6 +14,12 @@ public class ChessPiece {
 
     private final ChessGame.TeamColor pieceColor;
     private final ChessPiece.PieceType type;
+    private PawnMovesCalculator pawnMoves = new PawnMovesCalculator();
+    private BishopMovesCalculator bishopMoves = new BishopMovesCalculator();
+    private KnightMovesCalculator knightMoves = new KnightMovesCalculator();
+    private RookMovesCalculator rookMoves = new RookMovesCalculator();
+    private QueenMovesCalculator queenMoves = new QueenMovesCalculator();
+    private KingMovesCalculator kingMoves = new KingMovesCalculator();
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
@@ -57,17 +63,17 @@ public class ChessPiece {
         ChessPiece piece = board.getPiece(myPosition);
         Collection<ChessMove> moves = new ArrayList<>();
         if (piece.getPieceType() == ChessPiece.PieceType.KING) {
-            moves = KingMovesCalculator.validKingMoves(board, myPosition);
+            moves = kingMoves.validKingMoves(board, myPosition);
         } else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN) {
-            moves = QueenMovesCalculator.validQueenMoves(board, myPosition);
+            moves = queenMoves.validQueenMoves(board, myPosition);
         } else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP) {
-            moves = BishopMovesCalculator.validBishopMoves(board, myPosition);
+            moves = bishopMoves.validBishopMoves(board, myPosition);
         } else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
-            moves = KnightMovesCalculator.validKnightMoves(board, myPosition);
+            moves = knightMoves.validKnightMoves(board, myPosition);
         } else if (piece.getPieceType() == ChessPiece.PieceType.ROOK) {
-            moves = RookMovesCalculator.validRookMoves(board, myPosition);
+            moves = rookMoves.validRookMoves(board, myPosition);
         } else if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
-            moves = PawnMovesCalculator.validPawnMoves(board,myPosition);
+            moves = pawnMoves.validPawnMoves(board,myPosition);
         }
         return moves;
     }

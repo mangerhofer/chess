@@ -5,9 +5,10 @@ import java.util.Collection;
 
 public class RookMovesCalculator {
 
-    private static final Collection<ChessMove> rookMoves = new ArrayList<>();
+    private final Collection<ChessMove> rookMoves = new ArrayList<>();
+    private MovesCalculator movesCalculator = new MovesCalculator();
 
-    public static Collection<ChessMove> validRookMoves(ChessBoard board, ChessPosition position) {
+    public Collection<ChessMove> validRookMoves(ChessBoard board, ChessPosition position) {
         rookMoves.clear();
         int x = position.getRow();
         int y = position.getColumn();
@@ -18,9 +19,9 @@ public class RookMovesCalculator {
             ChessPosition nextPosition = new ChessPosition(x, i);
             if (nextPosition.getColumn() <= 8) {
                 if (board.getPiece(nextPosition) == null) {
-                    rookMoves.addAll(MovesCalculator.bishopAndRookMoves(board,position,nextPosition));
+                    rookMoves.addAll(movesCalculator.bishopAndRookMoves(board,position,nextPosition));
                 } else if (board.getPiece(position) != null) {
-                    rookMoves.addAll(MovesCalculator.bishopAndRookMoves(board,position,nextPosition));
+                    rookMoves.addAll(movesCalculator.bishopAndRookMoves(board,position,nextPosition));
                     break;
                 }
             } else {
@@ -32,9 +33,9 @@ public class RookMovesCalculator {
             ChessPosition nextPosition = new ChessPosition(x, i);
             if (nextPosition.getColumn() >= 1) {
                 if (board.getPiece(nextPosition) == null) {
-                    rookMoves.addAll(MovesCalculator.bishopAndRookMoves(board,position,nextPosition));
+                    rookMoves.addAll(movesCalculator.bishopAndRookMoves(board,position,nextPosition));
                 } else if (board.getPiece(position) != null) {
-                    rookMoves.addAll(MovesCalculator.bishopAndRookMoves(board,position,nextPosition));
+                    rookMoves.addAll(movesCalculator.bishopAndRookMoves(board,position,nextPosition));
                     break;
                 }
             } else {
@@ -48,9 +49,9 @@ public class RookMovesCalculator {
             ChessPosition nextPosition = new ChessPosition(i, y);
             if (nextPosition.getRow() <= 8) {
                 if (board.getPiece(nextPosition) == null) {
-                    rookMoves.addAll(MovesCalculator.bishopAndRookMoves(board,position,nextPosition));
+                    rookMoves.addAll(movesCalculator.bishopAndRookMoves(board,position,nextPosition));
                 } else if (board.getPiece(position) != null) {
-                    rookMoves.addAll(MovesCalculator.bishopAndRookMoves(board,position,nextPosition));
+                    rookMoves.addAll(movesCalculator.bishopAndRookMoves(board,position,nextPosition));
                     break;
                 }
             } else {
@@ -62,9 +63,9 @@ public class RookMovesCalculator {
             ChessPosition nextPosition = new ChessPosition(i, y);
             if (nextPosition.getRow() >= 1) {
                 if (board.getPiece(nextPosition) == null) {
-                    rookMoves.addAll(MovesCalculator.bishopAndRookMoves(board,position,nextPosition));
+                    rookMoves.addAll(movesCalculator.bishopAndRookMoves(board,position,nextPosition));
                 } else if (board.getPiece(position) != null) {
-                    rookMoves.addAll(MovesCalculator.bishopAndRookMoves(board,position,nextPosition));
+                    rookMoves.addAll(movesCalculator.bishopAndRookMoves(board,position,nextPosition));
                     break;
                 }
             } else {

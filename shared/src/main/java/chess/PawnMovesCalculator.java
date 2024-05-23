@@ -5,13 +5,13 @@ import java.util.Collection;
 
 public class PawnMovesCalculator {
 
-    private static final Collection<ChessMove> pawnMoves = new ArrayList<>();
+    private final Collection<ChessMove> pawnMoves = new ArrayList<>();
 
     public PawnMovesCalculator() {
 
     }
 
-    public static Collection<ChessMove> validPawnMoves(ChessBoard board, ChessPosition position) {
+    public Collection<ChessMove> validPawnMoves(ChessBoard board, ChessPosition position) {
         pawnMoves.clear();
         ChessPiece piece = board.getPiece(position);
         ChessMove move;
@@ -81,24 +81,34 @@ public class PawnMovesCalculator {
     }
 
     //creating method to avoid duplicating code for getting most common pawn moves
-    public static void getPawnMoves(ChessBoard board, ChessPosition pos, ChessPosition pos1, ChessPosition pos2, ChessPosition pos3) {
+    public void getPawnMoves(ChessBoard board, ChessPosition pos, ChessPosition pos1, ChessPosition pos2, ChessPosition pos3) {
         ChessMove move;
         ChessPiece piece = board.getPiece(pos);
+        int xPos1 = pos1.getRow();
+        int yPos1 = pos1.getColumn();
+        int xPos2 = pos2.getRow();
+        int yPos2 = pos2.getColumn();
+        int xPos3 = pos3.getRow();
+        int yPos3 = pos3.getColumn();
 
-        if (board.getPiece(pos1) == null) {
-            move = new ChessMove(pos, pos1, null);
-            pawnMoves.add(move);
+        if (xPos1 <= 8 && xPos1 >=1 && yPos1 <=8 && yPos1 >=1) {
+            if (board.getPiece(pos1) == null) {
+                move = new ChessMove(pos, pos1, null);
+                pawnMoves.add(move);
+            }
         }
-        if (board.getPiece(pos2) != null && board.getPiece(pos2).getTeamColor() != piece.getTeamColor()) {
-            move = new ChessMove(pos, pos2, null);
-            pawnMoves.add(move);
-        } else if (board.getPiece(pos3) != null && board.getPiece(pos3).getTeamColor() != piece.getTeamColor()) {
-            move = new ChessMove(pos, pos3, null);
-            pawnMoves.add(move);
+        if (xPos2 <= 8 && xPos2 >=1 && yPos2 <=8 && yPos2 >=1 && xPos3 <= 8 && xPos3 >= 1 && yPos3 <= 8 && yPos3 >= 1) {
+            if (board.getPiece(pos2) != null && board.getPiece(pos2).getTeamColor() != piece.getTeamColor()) {
+                move = new ChessMove(pos, pos2, null);
+                pawnMoves.add(move);
+            } else if (board.getPiece(pos3) != null && board.getPiece(pos3).getTeamColor() != piece.getTeamColor()) {
+                move = new ChessMove(pos, pos3, null);
+                pawnMoves.add(move);
+            }
         }
     }
 
-    public static void getPromPiece(ChessBoard board, ChessPosition pos, ChessPosition pos1, ChessPosition pos2, ChessPosition pos3) {
+    public void getPromPiece(ChessBoard board, ChessPosition pos, ChessPosition pos1, ChessPosition pos2, ChessPosition pos3) {
         ChessMove move;
         ChessPiece piece = board.getPiece(pos);
 
