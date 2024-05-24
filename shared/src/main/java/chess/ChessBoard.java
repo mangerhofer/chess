@@ -89,6 +89,14 @@ public class ChessBoard {
 
     }
 
+    public void copyBoard(ChessBoard board) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                this.board[i][j] = board.board[i][j];
+            }
+        }
+    }
+
     @Override
     public String toString() {
         return "ChessBoard{" +
