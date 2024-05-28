@@ -41,6 +41,10 @@ public class ChessGame {
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
+        TeamColor firstTurn = TeamColor.WHITE;
+        if (team == null) {
+            this.team = firstTurn;
+        }
         return team;
     }
 
@@ -332,7 +336,13 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        return isInCheck(teamColor) && validMoves.isEmpty();
+        boolean inCheckmate = false;
+        allValidMoves();
+        if (isInCheck(teamColor) && allValidMovesArray.isEmpty()) {
+            inCheckmate = true;
+        }
+//        return isInCheck(teamColor) && validMoves.isEmpty();
+        return inCheckmate;
     }
 
     /**
@@ -361,6 +371,11 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
+        ChessBoard copy = new ChessBoard();
+        if (board == null) {
+            copy.resetBoard();
+            this.board = copy;
+        }
         return board;
     }
 }
