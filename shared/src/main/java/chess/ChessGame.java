@@ -14,8 +14,11 @@ public class ChessGame {
     private TeamColor team;
     private ChessBoard board;
     private final Collection<ChessMove> validMoves = new ArrayList<>();
+    private final Collection<ChessMove> validBlackMoves = new ArrayList<>();
+    private final Collection<ChessMove> validWhiteMoves = new ArrayList<>();
     private final Collection<ChessMove> allMoves = new ArrayList<>();
     private final Collection<ChessMove> allValidMovesArray = new ArrayList<>();
+    private final Collection<ChessMove> allValidMovesArray2 = new ArrayList<>();
     private final Collection<ChessMove> checkValidMovesArray = new ArrayList<>();
     private int validMovesCounter = 0;
     private final Collection<ChessMove> allWhiteMoves = new ArrayList<>();
@@ -337,12 +340,102 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         boolean inCheckmate = false;
+        boolean blackInCheck = false;
+        boolean whiteInCheck = false;
+
         allValidMoves();
-        if (isInCheck(teamColor) && allValidMovesArray.isEmpty()) {
+        Collection<ChessMove> checkMateWhiteMoves = new ArrayList<>();
+        Collection<ChessMove> checkMateBlackMoves = new ArrayList<>();
+        ChessPosition findKing = new ChessPosition(0,0);
+        ChessBoard copy = new ChessBoard(board);
+
+        ChessPosition kingWhitePos = findKing.findWhiteKing(board);
+        ChessPosition kingBlackPos = findKing.findBlackKing(board);
+
+        for (ChessMove move : allValidMovesArray) {
+            ChessPosition startPosition = move.getStartPosition();
+            ChessPiece piece = getBoard().getPiece(startPosition);
+            if (piece != null) {
+                if (piece.getTeamColor() == TeamColor.WHITE) {
+                    if (teamInCheck(kingWhitePos)) {
+                        whiteInCheck = true;
+                        checkMateWhiteMoves.addAll(checkTeamCheckMate(move, kingWhitePos,kingBlackPos));
+                    } else if (teamInCheck(kingBlackPos)) {
+                        blackInCheck = true;
+                        checkMateBlackMoves.addAll(checkTeamCheckMate(move, kingBlackPos, kingWhitePos));
+                    } else {
+                        checkMateWhiteMoves.add(move);
+                    }
+                }
+                if (piece.getTeamColor() == TeamColor.BLACK) {
+                    if (teamInCheck(kingBlackPos)) {
+                        blackInCheck = true;
+                        checkMateBlackMoves.addAll(checkTeamCheckMate(move, kingBlackPos, kingWhitePos));
+                    } else if (teamInCheck(kingWhitePos)) {
+                        whiteInCheck = true;
+                        checkMateWhiteMoves.addAll(checkTeamCheckMate(move, kingWhitePos, kingBlackPos));
+                    } else {
+                        checkMateBlackMoves.add(move);
+                    }
+                }
+            }
+        }
+
+        if (teamColor == ChessGame.TeamColor.WHITE && checkMateWhiteMoves.isEmpty() && whiteInCheck) {
+            inCheckmate = true;
+        } else if (teamColor == ChessGame.TeamColor.BLACK && checkMateBlackMoves.isEmpty() && blackInCheck) {
             inCheckmate = true;
         }
-//        return isInCheck(teamColor) && validMoves.isEmpty();
+
         return inCheckmate;
+    }
+
+    public Collection<ChessMove> checkTeamCheckMate (ChessMove move, ChessPosition kingPos, ChessPosition kingPos2) {
+        Collection<ChessMove> pieceMoves = new ArrayList<>();
+        ChessBoard copy = new ChessBoard(board);
+
+        ChessPosition startPosition = move.getStartPosition();
+        ChessPosition endPosition = move.getEndPosition();
+        ChessPiece piece = board.getPiece(startPosition);
+        TeamColor teamColor = piece.getTeamColor();
+        ChessPiece kingPiece = board.getPiece(kingPos);
+        TeamColor kingColor = kingPiece.getTeamColor();
+
+        board.addPiece(endPosition, piece);
+        board.addPiece(startPosition, null);
+        allValidMoves2();
+        if (teamColor != kingColor) {
+            if (teamInCheck(kingPos)) {
+                board.copyBoard(copy);
+            }
+        } else {
+            if (teamInCheck(kingPos)) {
+                board.copyBoard(copy);
+            }
+            else {
+                board.copyBoard(copy);
+                pieceMoves.add(move);
+            }
+        }
+
+
+        return pieceMoves;
+    }
+
+    public void allValidMoves2() {
+        allValidMovesArray2.clear();
+        ChessBoard board = getBoard();
+
+        if (board != null) {
+            for (int i = 1; i <= 8; i++) {
+                for (int j = 1; j <= 8; j++) {
+                    ChessPosition newPosition = new ChessPosition(i, j);
+                    if (board.getPiece(newPosition) != null) {
+                        allValidMovesArray2.addAll(pieceMoves(newPosition));
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -353,7 +446,125 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        return validMoves.isEmpty() && !isInCheck(teamColor);
+        boolean inCheck = false;
+        boolean noMoves = false;
+        ChessPosition findKing = new ChessPosition(0, 0);
+        ChessPosition whiteKing = findKing.findWhiteKing(getBoard());
+        ChessPosition blackKing = findKing.findBlackKing(getBoard());
+
+        allValidMoves();
+        checkValidMoves2(getBoard(), allValidMovesArray);
+
+        if (teamColor == ChessGame.TeamColor.WHITE) {
+            if (teamInCheck(whiteKing)) {
+                inCheck = true;
+            } else {
+                if (validWhiteMoves.isEmpty()) {
+                    noMoves = true;
+                }
+            }
+        } else if (teamColor == ChessGame.TeamColor.BLACK) {
+            if (teamInCheck(blackKing)) {
+                inCheck = true;
+            } else {
+                if (validBlackMoves.isEmpty()) {
+                    noMoves = true;
+                }
+            }
+        }
+
+        return !inCheck && noMoves;
+    }
+
+    public void checkValidMoves2(ChessBoard board, Collection<ChessMove> possibleMoves) {
+        validBlackMoves.clear();
+        validWhiteMoves.clear();
+        ChessPosition findKing = new ChessPosition(0, 0);
+        ChessPosition whiteKing = findKing.findWhiteKing(getBoard());
+        ChessPosition blackKing = findKing.findBlackKing(getBoard());
+        ChessBoard copy = new ChessBoard(board);
+
+        for (ChessMove move : possibleMoves) {
+            ChessPosition startPosition = move.getStartPosition();
+            ChessPosition endPosition = move.getEndPosition();
+            ChessPiece piece = board.getPiece(startPosition);
+            if (piece.getTeamColor() == TeamColor.WHITE) {
+                if (piece.getPieceType() == ChessPiece.PieceType.KING) {
+                    tryMove(move, whiteKing, startPosition, endPosition, piece);
+                    if (teamInCheck(endPosition)) {
+                        board.copyBoard(copy);
+                    } else {
+                        board.copyBoard(copy);
+                        if (!validWhiteMoves.contains(move)) {
+                            validWhiteMoves.add(move);
+                        }
+                    }
+                } else {
+                    if (teamInCheck(whiteKing)) {
+                        tryMove(move, whiteKing, startPosition, endPosition, piece);
+                    } else {
+                        tryMove(move, whiteKing, startPosition, endPosition, piece);
+                        if (piece.getTeamColor() == TeamColor.WHITE) {
+                            if (!validWhiteMoves.contains(move)) {
+                                validWhiteMoves.add(move);
+                            }
+                        }
+                    }
+                }
+            }
+            else if (piece.getTeamColor() == TeamColor.BLACK) {
+                if (piece.getPieceType() == ChessPiece.PieceType.KING) {
+                    tryMove(move, blackKing, startPosition, endPosition, piece);
+                    if (teamInCheck(endPosition)) {
+                        board.copyBoard(copy);
+                    } else {
+                        board.copyBoard(copy);
+                        if (!validBlackMoves.contains(move)) {
+                            validBlackMoves.add(move);
+                        }
+                    }
+                } else {
+                    if (teamInCheck(blackKing)) {
+                        tryMove(move, blackKing, startPosition, endPosition, piece);
+                    } else {
+                        tryMove(move, blackKing, startPosition, endPosition, piece);
+                        if (!validBlackMoves.contains(move)) {
+                            validBlackMoves.add(move);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void tryMove(ChessMove move, ChessPosition kingPos, ChessPosition startPosition, ChessPosition endPosition, ChessPiece piece) {
+        ChessBoard copy = new ChessBoard(board);
+
+        board.addPiece(endPosition, piece);
+        board.addPiece(startPosition, null);
+        if (piece.getPieceType() == ChessPiece.PieceType.KING) {
+            if (teamInCheck(endPosition)) {
+                board.copyBoard(copy);
+            } else {
+                board.copyBoard(copy);
+                if (piece.getTeamColor() == TeamColor.WHITE) {
+                    validWhiteMoves.add(move);
+                } else {
+                    validBlackMoves.add(move);
+                }
+            }
+        } else {
+            if (teamInCheck(kingPos)) {
+                board.copyBoard(copy);
+            } else {
+                board.copyBoard(copy);
+                if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                    validWhiteMoves.add(move);
+                } else {
+                    validBlackMoves.add(move);
+                }
+            }
+        }
     }
 
     /**
