@@ -24,8 +24,6 @@ public class MovesCalculator {
                     move = new ChessMove(pos, newPos, null);
                     pieceMoves.add(move);
                 }
-            } else if (piece.getPieceType() == ChessPiece.PieceType.KING){
-                break;
             }
         }
 
