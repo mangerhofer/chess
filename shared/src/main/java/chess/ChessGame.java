@@ -298,7 +298,6 @@ public class ChessGame {
         checkValidMovesArray.clear();
 
         TeamColor teamColor = getBoard().getPiece(startPosition).getTeamColor();
-        TeamColor teamTurn = getTeamTurn();
 
         if (getBoard() != null && getBoard().getPiece(startPosition) != null) {
             if (xEnd <= 8 && xEnd >= 1 && yEnd <= 8 && yEnd >= 1) {
@@ -361,7 +360,7 @@ public class ChessGame {
         return checkCheckMate(allValidMovesArray, teamColor) || checkCheckMate(allValidMovesArray, teamColor);
     }
 
-    public Collection<ChessMove> checkTeamCheckMate (ChessMove move, ChessPosition kingPos, ChessPosition kingPos2) {
+    public Collection<ChessMove> checkTeamCheckMate (ChessMove move, ChessPosition kingPos) {
         Collection<ChessMove> pieceMoves = new ArrayList<>();
         ChessBoard copy = new ChessBoard(board);
 
@@ -423,7 +422,7 @@ public class ChessGame {
                 if (piece.getTeamColor() == TeamColor.WHITE) {
                     if (teamInCheck(kingWhitePos, allValidMovesArray)) {
                         whiteInCheck = true;
-                        checkMateWhiteMoves.addAll(checkTeamCheckMate(move, kingWhitePos, kingBlackPos));
+                        checkMateWhiteMoves.addAll(checkTeamCheckMate(move, kingWhitePos));
                     }
                     else {
                         checkMateWhiteMoves.add(move);
@@ -432,7 +431,7 @@ public class ChessGame {
                 if (piece.getTeamColor() == TeamColor.BLACK) {
                     if (teamInCheck(kingBlackPos, allValidMovesArray)) {
                         blackInCheck = true;
-                        checkMateBlackMoves.addAll(checkTeamCheckMate(move, kingBlackPos, kingWhitePos));
+                        checkMateBlackMoves.addAll(checkTeamCheckMate(move, kingBlackPos));
                     }
                     else {
                         checkMateBlackMoves.add(move);
