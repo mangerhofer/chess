@@ -2,56 +2,64 @@ package dataaccess;
 
 import model.AuthData;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AuthDAO implements AuthInterface {
     Collection<AuthData> userTokens;
-    private int nextId = 1;
-    final private HashMap<Integer, AuthData> tokens = new HashMap<>();
+    final private HashMap<String, AuthData> tokens = new HashMap<>();
 
     public AuthData createAuthToken(AuthData token) throws DataAccessException {
         token = new AuthData(token.authToken(), token.username());
 
-        nextId++;
-        tokens.put(nextId, token);
-
-        return token;
-    }
-
-    public Collection<AuthData> listGames() throws DataAccessException {
-        return List.of();
+        String authToken = UUID.randomUUID().toString();
+        if (!tokens.containsKey(authToken)) {
+            tokens.put(authToken, token);
+            return token;
+        } else {
+            throw new DataAccessException("Auth token already exists");
+        }
     }
 
     public AuthData getAuthToken(AuthData token) throws DataAccessException {
-        int tokenValue = 0;
-        for (Map.Entry<Integer, AuthData> possToken : tokens.entrySet()) {
+        String tokenValue = null;
+        for (Map.Entry<String, AuthData> possToken : tokens.entrySet()) {
             if (possToken.getValue().equals(token)) {
                 tokenValue = possToken.getKey();
             }
         }
 
-        return tokens.get(tokenValue);
+        if (tokens.containsKey(tokenValue)) {
+            return tokens.get(tokenValue);
+        } else {
+            throw new DataAccessException("Auth token not found");
+        }
     }
 
     public void deleteAuthToken(AuthData token) throws DataAccessException {
-        int tokenValue = 0;
-        for (Map.Entry<Integer, AuthData> possToken : tokens.entrySet()) {
+        String tokenValue = null;
+        for (Map.Entry<String, AuthData> possToken : tokens.entrySet()) {
             if (possToken.getValue().equals(token)) {
                 tokenValue = possToken.getKey();
             }
         }
 
-        tokens.remove(tokenValue);
-        userTokens.remove(token);
+        if (tokens.containsKey(tokenValue)) {
+
+            tokens.remove(tokenValue);
+            userTokens.remove(token);
+        } else {
+            throw new DataAccessException("Auth token not found");
+        }
 
     }
 
     public void deleteAllAuthTokens() throws DataAccessException {
-        userTokens.clear();
-        tokens.clear();
+        if (!tokens.isEmpty() && !userTokens.isEmpty()) {
+            userTokens.clear();
+            tokens.clear();
+        } else {
+            throw new DataAccessException("No auth tokens found");
+        }
     }
 
 }

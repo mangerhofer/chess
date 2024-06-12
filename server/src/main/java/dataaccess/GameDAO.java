@@ -1,6 +1,5 @@
 package dataaccess;
 
-import model.AuthData;
 import model.GameData;
 
 import java.util.Collection;
@@ -15,22 +14,47 @@ public class GameDAO implements GameInterface {
     public GameData createGame(GameData game) throws DataAccessException{
         game = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
 
-        nextId++;
-        games.put(nextId, game);
+        if (!games.containsValue(game)) {
+            nextId++;
+            games.put(nextId, game);
 
-        return game;
+            return game;
+        } else {
+            throw new DataAccessException("Game already exists");
+        }
     }
 
     public void updateGame(GameData game) throws DataAccessException{
+        if (games.containsValue(game)) {
+
+        } else {
+            throw new DataAccessException("Game does not exist");
+        }
 
     }
 
     public Collection<GameData> listGames() throws DataAccessException{
-        return games.values();
+        if (!games.isEmpty()) {
+            return games.values();
+        } else {
+            throw new DataAccessException("No games found");
+        }
     }
 
-    public GameData getGame(int gameID) throws DataAccessException{
-        return games.get(gameID);
+    public GameData getGame(GameData game) throws DataAccessException{
+        int gameValue = 0;
+
+        for (Map.Entry<Integer, GameData> possGame : games.entrySet()) {
+            if (possGame.getValue().equals(game)) {
+                gameValue = possGame.getKey();
+            }
+        }
+
+        if (games.containsKey(gameValue)){
+            return games.get(gameValue);
+        } else {
+            throw new DataAccessException("No such game");
+        }
     }
 
     public void deleteGame(GameData game) throws DataAccessException{
@@ -41,13 +65,21 @@ public class GameDAO implements GameInterface {
             }
         }
 
-        games.remove(gameValue);
-        userGames.remove(game);
+        if (games.containsKey(gameValue)){
+            games.remove(gameValue);
+            userGames.remove(game);
+        } else {
+            throw new DataAccessException("No such game");
+        }
     }
 
     public void deleteAllGames() throws DataAccessException{
-        userGames.clear();
-        games.clear();
+        if (!games.isEmpty()) {
+            userGames.clear();
+            games.clear();
+        } else {
+            throw new DataAccessException("No games found");
+        }
     }
 
 //    updateGame: Updates a chess game. It should replace the chess game string corresponding to a given gameID.

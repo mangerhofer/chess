@@ -4,6 +4,7 @@ import model.UserData;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 public class UserDAO implements UserInterface {
     Collection<UserData> userData;
@@ -11,12 +12,15 @@ public class UserDAO implements UserInterface {
     final private HashMap<Integer, UserData> users = new HashMap<>();
 
     public UserData addUser(UserData u) throws DataAccessException{
-        u = new UserData(u.username(), u.password(), u.email());
+        if (!userData.contains(u)) {
+            u = new UserData(u.username(), u.password(), u.email());
 
-        nextId++;
-        users.put(nextId, u);
-
-        return u;
+            nextId++;
+            users.put(nextId, u);
+            return u;
+        } else {
+            throw new DataAccessException("User already exists");
+        }
     }
 
     public void updateUser(UserData u) throws DataAccessException{
@@ -24,21 +28,44 @@ public class UserDAO implements UserInterface {
     }
 
     public Collection<UserData> listUsers() throws DataAccessException{
-        return users.values();
+        if (!users.isEmpty()) {
+            return users.values();
+        } else {
+            throw new DataAccessException("No users found");
+        }
     }
 
     public UserData getUser(int id) throws DataAccessException{
-        return users.get(id);
+        if (users.containsKey(id)) {
+            return users.get(id);
+        } else {
+            throw new DataAccessException("User not found");
+        }
     }
 
     public void deleteUser(UserData u) throws DataAccessException{
-        userData.remove(u);
-        users.remove(nextId);
+        int userValue = 0;
+        for (Map.Entry<Integer, UserData> possGame : users.entrySet()) {
+            if (possGame.getValue().equals(u)) {
+                userValue = possGame.getKey();
+            }
+        }
+
+        if (users.containsKey(userValue) && userData.contains(u)) {
+            users.remove(userValue);
+            userData.remove(u);
+        } else {
+            throw new DataAccessException("User not found");
+        }
     }
 
     public void deleteAllUsers() throws DataAccessException{
-        userData.clear();
-        users.clear();
+        if (!users.isEmpty() && !userData.isEmpty()) {
+            userData.clear();
+            users.clear();
+        } else {
+            throw new DataAccessException("No users found");
+        }
     }
 
 }
