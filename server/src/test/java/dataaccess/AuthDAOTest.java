@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.AuthData;
+import model.UserData;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -28,13 +29,14 @@ class AuthDAOTest {
     @ParameterizedTest
 //    @ValueSource(classes = {SqlAuthDAO.class, MemoryAuthDAO.class})
     @ValueSource(classes = {MemoryAuthDAO.class})
-    void addPet(Class<? extends AuthInterface> dbClass) throws DataAccessException {
+    void createAuthToken(Class<? extends AuthInterface> dbClass) throws DataAccessException {
         AuthInterface dataAccess = getDataAccess(dbClass);
 
         String auth = UUID.randomUUID().toString();
+        UserData user = new UserData("joe", "joepassword", "joe@email.com");
 
         var authToken = new AuthData(auth, "joe");
-        assertDoesNotThrow(() -> dataAccess.createAuthToken("joe"));
+        assertDoesNotThrow(() -> dataAccess.createAuthToken(user,"joe", "joepassword"));
     }
 
     @ParameterizedTest
@@ -42,11 +44,14 @@ class AuthDAOTest {
     @ValueSource(classes = {MemoryAuthDAO.class})
     void getAllAuthTokens(Class<? extends AuthInterface> dbClass) throws DataAccessException {
         AuthInterface dataAccess = getDataAccess(dbClass);
+        UserData user = new UserData("joe", "joepassword", "joe@email.com");
+        UserData user2 = new UserData("sally", "sallypassword", "sally@email.com");
+        UserData user3 = new UserData("fred", "fredpassword", "fred@email.com");
 
         List<AuthData> expected = new ArrayList<>();
-        expected.add(dataAccess.createAuthToken("joe"));
-        expected.add(dataAccess.createAuthToken("sally"));
-        expected.add(dataAccess.createAuthToken("fred"));
+        expected.add(dataAccess.createAuthToken(user,"joe", "joepassword"));
+        expected.add(dataAccess.createAuthToken(user2,"sally", "sallypassword"));
+        expected.add(dataAccess.createAuthToken(user3,"fred", "fredpassword"));
 
         var actual = dataAccess.getAllAuthTokens();
         assertAuthTokenCollectionEqual(expected, actual);
@@ -57,11 +62,14 @@ class AuthDAOTest {
     @ValueSource(classes = {MemoryAuthDAO.class})
     void deleteAuthToken(Class<? extends AuthInterface> dbClass) throws DataAccessException {
         AuthInterface dataAccess = getDataAccess(dbClass);
+        UserData user = new UserData("joe", "joepassword", "joe@email.com");
+        UserData user2 = new UserData("sally", "sallypassword", "sally@email.com");
+        UserData user3 = new UserData("fred", "fredpassword", "fred@email.com");
 
         List<AuthData> expected = new ArrayList<>();
-        var deletePet = dataAccess.createAuthToken("joe");
-        expected.add(dataAccess.createAuthToken("sally"));
-        expected.add(dataAccess.createAuthToken("fred"));
+        var deletePet = dataAccess.createAuthToken(user,"joe", "joepassword");
+        expected.add(dataAccess.createAuthToken(user2,"sally", "sallypassword"));
+        expected.add(dataAccess.createAuthToken(user3,"fred", "fredpassword"));
 
         dataAccess.deleteAuthToken(deletePet);
 
@@ -74,9 +82,11 @@ class AuthDAOTest {
     @ValueSource(classes = {MemoryAuthDAO.class})
     void deleteAllAuthTokens(Class<? extends AuthInterface> dbClass) throws Exception {
         AuthInterface dataAccess = getDataAccess(dbClass);
+        UserData user = new UserData("joe", "joepassword", "joe@email.com");
+        UserData user2 = new UserData("sally", "sallypassword", "sally@email.com");
 
-        dataAccess.createAuthToken("joe");
-        dataAccess.createAuthToken("sally");
+        dataAccess.createAuthToken(user,"joe", "joepassword");
+        dataAccess.createAuthToken(user2,"sally", "sallypassword");
 
         dataAccess.deleteAllAuthTokens();
 
