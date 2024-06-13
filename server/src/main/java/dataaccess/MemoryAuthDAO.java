@@ -38,10 +38,10 @@ public class MemoryAuthDAO implements AuthInterface {
         return tokens.values();
     }
 
-    public void deleteAuthToken(AuthData token) {
+    public void deleteAuthToken(String username) {
         String tokenValue = null;
-        for (Map.Entry<String, AuthData> possToken : tokens.entrySet()) {
-            if (possToken.getValue().equals(token)) {
+        for (Map.Entry<String, String> possToken : authTokenMap.entrySet()) {
+            if (possToken.getValue().equals(username)) {
                 tokenValue = possToken.getKey();
             }
         }

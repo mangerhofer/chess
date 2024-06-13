@@ -6,6 +6,8 @@ import dataaccess.AuthInterface;
 import model.AuthData;
 import model.UserData;
 
+import java.util.Collection;
+
 public class UserService {
     private final UserInterface userInterface;
     private final AuthInterface authInterface;
@@ -26,7 +28,19 @@ public class UserService {
         return authInterface.createAuthToken(user, user.username(), user.password());
     }
 
-    public void logout(AuthData token) throws DataAccessException {
-        authInterface.deleteAuthToken(token);
+    public void logout(String username) throws DataAccessException {
+        authInterface.deleteAuthToken(username);
+    }
+
+    public UserData getUser(String username) throws DataAccessException {
+        return userInterface.getUser(username);
+    }
+
+    public Collection<UserData> getAllUsers() throws DataAccessException {
+        return userInterface.listUsers();
+    }
+
+    public void deleteUser(UserData user) throws DataAccessException {
+        userInterface.deleteUser(user.username());
     }
 }

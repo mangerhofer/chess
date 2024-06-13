@@ -13,6 +13,10 @@ public class GameService {
         this.gameInterface = gameInterface;
     }
 
+    public GameData getGame(int gameID) throws DataAccessException {
+        return gameInterface.getGame(gameID);
+    }
+
     public Collection<GameData> getAllGames() throws DataAccessException {
         return gameInterface.listGames();
     }
@@ -21,7 +25,11 @@ public class GameService {
         return gameInterface.createGame(gameName);
     }
 
-    public void updateGame(int gameID, String playerColor, String username) throws DataAccessException {
-        gameInterface.updateGame(gameID, playerColor, username);
+    public GameData updateGame(int gameID, String playerColor, String username) throws DataAccessException {
+        return gameInterface.updateGame(gameID, playerColor, username);
+    }
+
+    public void deleteGame(GameData game) throws DataAccessException {
+        gameInterface.deleteGame(game);
     }
 }

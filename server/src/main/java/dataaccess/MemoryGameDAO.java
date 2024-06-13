@@ -21,20 +21,21 @@ public class MemoryGameDAO implements GameInterface {
         return game;
     }
 
-    public void updateGame(int gameID, String playerColor, String username) {
+    public GameData updateGame(int gameID, String playerColor, String username) {
 //    updateGame: Updates a chess game. It should replace the chess game string corresponding to a given gameID.
 //                  This is used when players join a game or when a move is made.
         GameData game = games.get(gameID);
+        GameData updated = null;
 
         if (Objects.equals(playerColor, "BLACK") && game.blackUsername() == null) {
-            game.setBlackUsername(username);
+            updated = game.setBlackUsername(username);
         } else if (Objects.equals(playerColor, "WHITE") && game.whiteUsername() == null) {
-            game.setWhiteUsername(username);
+            updated = game.setWhiteUsername(username);
         }
         if (!Objects.equals(game.game(), new ChessGame())) {
-            game.updateGame(game.game());
+            updated = game.updateGame(game.game());
         }
-
+        return updated;
     }
 
     public Collection<GameData> listGames() {

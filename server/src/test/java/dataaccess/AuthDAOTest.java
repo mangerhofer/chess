@@ -71,7 +71,7 @@ class AuthDAOTest {
         expected.add(dataAccess.createAuthToken(user2,"sally", "sallypassword"));
         expected.add(dataAccess.createAuthToken(user3,"fred", "fredpassword"));
 
-        dataAccess.deleteAuthToken(deletePet);
+        dataAccess.deleteAuthToken(user.username());
 
         var actual = dataAccess.getAllAuthTokens();
         assertAuthTokenCollectionEqual(expected, actual);
