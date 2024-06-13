@@ -1,7 +1,10 @@
 package model;
 
+import java.util.UUID;
+
 public record AuthData(String authToken, String username) {
-//    public AuthData setToken(String authToken) {
-//        return new GameData(authToken, this.username);
-//    }
+    public AuthData setAuthToken() {
+        String authToken = UUID.randomUUID().toString();
+        return new AuthData(authToken, this.username);
+    }
 }

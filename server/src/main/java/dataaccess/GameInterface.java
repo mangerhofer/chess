@@ -1,14 +1,15 @@
 package dataaccess;
 
+import chess.ChessGame;
 import model.GameData;
 
 import java.util.Collection;
 
 public interface GameInterface {
-    GameData createGame(GameData game) throws DataAccessException;
-    void updateGame(GameData game) throws DataAccessException;
+    GameData createGame(String gameName) throws DataAccessException;
+    void updateGame(int gameID, String playerColor, String username) throws DataAccessException;
     Collection<GameData> listGames() throws DataAccessException;
-    GameData getGame(GameData game) throws DataAccessException;
+    GameData getGame(int gameID) throws DataAccessException;
     void deleteGame(GameData game) throws DataAccessException;
     void deleteAllGames() throws DataAccessException;
 }

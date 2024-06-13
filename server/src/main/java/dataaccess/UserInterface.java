@@ -5,10 +5,10 @@ import model.UserData;
 import java.util.Collection;
 
 public interface UserInterface {
-    UserData addUser(UserData u) throws DataAccessException;
-    void updateUser(UserData u) throws DataAccessException;
+    UserData createUser(String username, String password, String email) throws DataAccessException;
+//    void updateUser(String email) throws DataAccessException;
     Collection<UserData> listUsers() throws DataAccessException;
-    UserData getUser(int id) throws DataAccessException;
-    void deleteUser(UserData u) throws DataAccessException;
+    UserData getUser(String username) throws DataAccessException;
+    void deleteUser(String username) throws DataAccessException;
     void deleteAllUsers() throws DataAccessException;
 }
