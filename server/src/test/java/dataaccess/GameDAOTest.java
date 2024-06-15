@@ -46,11 +46,12 @@ class GameDAOTest {
         games.add(dataAccess.createGame("sally v fred"));
 
         int gameId1 = games.getFirst().gameID();
+        ChessGame chessGame = new ChessGame();
         int gameId2 = games.getLast().gameID();
-        dataAccess.updateGame(gameId1, "BLACK", "sally");
+        dataAccess.updateGame(gameId1, "joe", "sally", "joe v sally", chessGame);
 //        dataAccess.updateGame(gameId1, "WHITE", "joe");
 
-        assertDoesNotThrow(() -> dataAccess.updateGame(gameId1, "BLACK", "sally"));
+        assertDoesNotThrow(() -> dataAccess.updateGame(gameId1, "joe", "sally", "joe v sally", chessGame));
     }
 
     @ParameterizedTest

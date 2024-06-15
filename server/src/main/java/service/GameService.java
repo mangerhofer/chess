@@ -1,5 +1,6 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.DataAccessException;
 import dataaccess.GameInterface;
 import model.GameData;
@@ -25,11 +26,15 @@ public class GameService {
         return gameInterface.createGame(gameName);
     }
 
-    public GameData updateGame(int gameID, String playerColor, String username) throws DataAccessException {
-        return gameInterface.updateGame(gameID, playerColor, username);
+    public GameData updateGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame chessGame) throws DataAccessException {
+        return gameInterface.updateGame(gameID, whiteUsername, blackUsername, gameName, chessGame);
     }
 
     public void deleteGame(GameData game) throws DataAccessException {
         gameInterface.deleteGame(game);
+    }
+
+    public void deleteAllGames() throws DataAccessException {
+        gameInterface.deleteAllGames();
     }
 }

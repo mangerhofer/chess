@@ -40,7 +40,17 @@ public class UserService {
         return userInterface.listUsers();
     }
 
+    public Collection<AuthData> getAllAuthTokens() throws DataAccessException {
+        return authInterface.getAllAuthTokens();
+    }
+
     public void deleteUser(UserData user) throws DataAccessException {
         userInterface.deleteUser(user.username());
+        authInterface.deleteAuthToken(user.username());
+    }
+
+    public void deleteAllUsers() throws DataAccessException {
+        userInterface.deleteAllUsers();
+        authInterface.deleteAllAuthTokens();
     }
 }
