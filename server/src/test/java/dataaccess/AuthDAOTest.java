@@ -42,6 +42,20 @@ class AuthDAOTest {
     @ParameterizedTest
 //    @ValueSource(classes = {SqlAuthDAO.class, MemoryAuthDAO.class})
     @ValueSource(classes = {MemoryAuthDAO.class})
+    void getUserFromAuthToken(Class<? extends AuthInterface> dbClass) throws DataAccessException {
+        AuthInterface dataAccess = getDataAccess(dbClass);
+        UserData user = new UserData("joe", "joepassword", "joe@email.com");
+
+        AuthData user1 = dataAccess.createAuthToken(user,"joe", "joepassword");
+
+        String username = dataAccess.getUserFromAuthToken(user1.authToken());
+
+        assertEquals("joe", username);
+    }
+
+    @ParameterizedTest
+//    @ValueSource(classes = {SqlAuthDAO.class, MemoryAuthDAO.class})
+    @ValueSource(classes = {MemoryAuthDAO.class})
     void getAllAuthTokens(Class<? extends AuthInterface> dbClass) throws DataAccessException {
         AuthInterface dataAccess = getDataAccess(dbClass);
         UserData user = new UserData("joe", "joepassword", "joe@email.com");
@@ -67,11 +81,11 @@ class AuthDAOTest {
         UserData user3 = new UserData("fred", "fredpassword", "fred@email.com");
 
         List<AuthData> expected = new ArrayList<>();
-        var deletePet = dataAccess.createAuthToken(user,"joe", "joepassword");
+        var deleteAuthToken = dataAccess.createAuthToken(user,"joe", "joepassword");
         expected.add(dataAccess.createAuthToken(user2,"sally", "sallypassword"));
         expected.add(dataAccess.createAuthToken(user3,"fred", "fredpassword"));
 
-        dataAccess.deleteAuthToken(user.username());
+        dataAccess.deleteAuthToken(deleteAuthToken.authToken());
 
         var actual = dataAccess.getAllAuthTokens();
         assertAuthTokenCollectionEqual(expected, actual);

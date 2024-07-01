@@ -3,6 +3,7 @@ package service;
 import chess.ChessGame;
 import dataaccess.DataAccessException;
 import dataaccess.GameInterface;
+import model.AuthData;
 import model.GameData;
 
 import java.util.Collection;
@@ -26,8 +27,12 @@ public class GameService {
         return gameInterface.createGame(gameName);
     }
 
-    public GameData updateGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame chessGame) throws DataAccessException {
-        return gameInterface.updateGame(gameID, whiteUsername, blackUsername, gameName, chessGame);
+    public GameData updateGame(int gameID, ChessGame chessGame) throws DataAccessException {
+        return gameInterface.updateGame(gameID, chessGame);
+    }
+
+    public GameData joinGame(int gameID, String playerColor, AuthData authToken) throws DataAccessException {
+        return gameInterface.joinGame(gameID, playerColor, authToken);
     }
 
     public void deleteGame(GameData game) throws DataAccessException {

@@ -2,6 +2,8 @@ package dataaccess;
 
 import chess.ChessGame;
 import model.GameData;
+import model.AuthData;
+import model.UserData;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -47,11 +49,29 @@ class GameDAOTest {
 
         int gameId1 = games.getFirst().gameID();
         ChessGame chessGame = new ChessGame();
-        int gameId2 = games.getLast().gameID();
-        dataAccess.updateGame(gameId1, "joe", "sally", "joe v sally", chessGame);
-//        dataAccess.updateGame(gameId1, "WHITE", "joe");
 
-        assertDoesNotThrow(() -> dataAccess.updateGame(gameId1, "joe", "sally", "joe v sally", chessGame));
+        dataAccess.updateGame(gameId1, chessGame);
+
+        assertDoesNotThrow(() -> dataAccess.updateGame(gameId1, chessGame));
+    }
+
+    @ParameterizedTest
+//    @ValueSource(classes = {SqlGameDAO.class, MemoryGameDAO.class})
+    @ValueSource(classes = {MemoryGameDAO.class})
+    void joinGame(Class<? extends GameInterface> dbClass) throws DataAccessException {
+        GameInterface dataAccess = getDataAccess(dbClass);
+        AuthInterface auth = new MemoryAuthDAO();
+
+        List<GameData> games = new ArrayList<>();
+        games.add(dataAccess.createGame("joe v sally"));
+
+        UserData user = new UserData("joe", "joepassword", "joe@email.com");
+        AuthData authToken = auth.createAuthToken(user, user.username(), user.password());
+
+        int gameId1 = games.getFirst().gameID();
+        dataAccess.joinGame(gameId1, "WHITE", authToken);
+
+        assertDoesNotThrow(() -> dataAccess.joinGame(gameId1, "BLACK", authToken));
     }
 
     @ParameterizedTest

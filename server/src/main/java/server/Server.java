@@ -33,18 +33,19 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        Spark.post("/User", this::register);
-        Spark.get("/User", this::login);
-        Spark.get("/User", this::getAllUsers);
-        Spark.delete("/User/:username", this::logout);
-        Spark.delete("/User/:username", this::deleteUser);
+        Spark.post("/user", this::register);
+        Spark.post("/session", this::login);
+        Spark.get("/user", this::getAllUsers);
+        Spark.delete("/session", this::logout);
+        Spark.delete("/user", this::deleteUser);
 
-        Spark.post("/Game/:gameName", this::createGame);
-        Spark.post("/Game", this::updateGame);
-        Spark.get("/Game", this::getAllGames);
-        Spark.delete("/Game/:gameID", this::deleteGame);
+        Spark.post("/game", this::createGame);
+        Spark.put("/game", this::updateGame);
+        Spark.put("/game", this::joinGame);
+        Spark.get("/game", this::getAllGames);
+        Spark.delete("/game", this::deleteGame);
 
-        Spark.delete("/Clear", this::clear);
+        Spark.delete("/db", this::clear);
 
         Spark.exception(ResponseException.class, this::exceptionHandler);
 
@@ -86,7 +87,7 @@ public class Server {
     }
 
     private Object logout(Request req, Response res) throws DataAccessException {
-        var username = String.format(req.params(":username"));
+        var username = String.format(req.params(":authToken"));
 
         userService.logout(username);
         res.status(200);
@@ -113,7 +114,15 @@ public class Server {
 
     private Object updateGame(Request req, Response res) throws DataAccessException {
         var gameData = new Gson().fromJson(req.body(), GameData.class);
-        gameData = gameService.updateGame(gameData.gameID(),gameData.whiteUsername(), gameData.blackUsername(),gameData.gameName(),gameData.game());
+        gameData = gameService.updateGame(gameData.gameID(),gameData.game());
+        return new Gson().toJson(gameData);
+    }
+
+    private Object joinGame(Request req, Response res) throws DataAccessException {
+        var gameData = new Gson().fromJson(req.body(), GameData.class);
+        String playerColor = String.format(req.params(":playerColor"));
+        AuthData authData = new Gson().fromJson(req.body(), AuthData.class);
+        gameData = gameService.joinGame(gameData.gameID(), playerColor, authData);
         return new Gson().toJson(gameData);
     }
 

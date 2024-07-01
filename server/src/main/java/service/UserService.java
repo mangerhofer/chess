@@ -28,8 +28,8 @@ public class UserService {
         return authInterface.createAuthToken(user, user.username(), user.password());
     }
 
-    public void logout(String username) throws DataAccessException {
-        authInterface.deleteAuthToken(username);
+    public void logout(String authToken) throws DataAccessException {
+        authInterface.deleteAuthToken(authToken);
     }
 
     public UserData getUser(String username) throws DataAccessException {
