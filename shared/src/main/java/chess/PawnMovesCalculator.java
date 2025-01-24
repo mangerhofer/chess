@@ -19,21 +19,23 @@ public class PawnMovesCalculator {
             if (myPos.getRow() == 2) {
                 for (int[] move : possWhiteMoves) {
                     ChessPosition newPos = new ChessPosition(move[0] + x, move[1] + y);
-                    if (move[1] == 0) {
-                        if (board.getPiece(newPos) == null) {
-                            ChessMove newMove = new ChessMove(myPos, newPos, null);
-                            pawnMoves.add(newMove);
-
-                            newPos = new ChessPosition(x + 2, y);
+                    if (newPos.getRow() >= 1 && newPos.getRow() <= 8 && newPos.getColumn() >= 1 && newPos.getColumn() <= 8) {
+                        if (move[1] == 0) {
                             if (board.getPiece(newPos) == null) {
-                                newMove = new ChessMove(myPos, newPos, null);
+                                ChessMove newMove = new ChessMove(myPos, newPos, null);
+                                pawnMoves.add(newMove);
+
+                                newPos = new ChessPosition(x + 2, y);
+                                if (board.getPiece(newPos) == null) {
+                                    newMove = new ChessMove(myPos, newPos, null);
+                                    pawnMoves.add(newMove);
+                                }
+                            }
+                        } else {
+                            if (board.getPiece(newPos) != null && board.getPiece(newPos).getTeamColor() != piece.getTeamColor()) {
+                                ChessMove newMove = new ChessMove(myPos, newPos, null);
                                 pawnMoves.add(newMove);
                             }
-                        }
-                    } else {
-                        if (board.getPiece(newPos) != null && board.getPiece(newPos).getTeamColor() != piece.getTeamColor()) {
-                            ChessMove newMove = new ChessMove(myPos, newPos, null);
-                            pawnMoves.add(newMove);
                         }
                     }
                 }
@@ -68,21 +70,23 @@ public class PawnMovesCalculator {
             if (myPos.getRow() == 7) {
                 for (int[] move: possBlackMoves) {
                     ChessPosition newPos = new ChessPosition(move[0]+x, move[1]+y);
-                    if (move[1] == 0) {
-                        if (board.getPiece(newPos) == null) {
-                            ChessMove newMove = new ChessMove(myPos, newPos, null);
-                            pawnMoves.add(newMove);
-
-                            newPos = new ChessPosition(x - 2, y);
+                    if (newPos.getRow() >= 1 && newPos.getRow() <= 8 && newPos.getColumn() >= 1 && newPos.getColumn() <= 8) {
+                        if (move[1] == 0) {
                             if (board.getPiece(newPos) == null) {
-                                newMove = new ChessMove(myPos, newPos, null);
+                                ChessMove newMove = new ChessMove(myPos, newPos, null);
+                                pawnMoves.add(newMove);
+
+                                newPos = new ChessPosition(x - 2, y);
+                                if (board.getPiece(newPos) == null) {
+                                    newMove = new ChessMove(myPos, newPos, null);
+                                    pawnMoves.add(newMove);
+                                }
+                            }
+                        } else {
+                            if (board.getPiece(newPos) != null && board.getPiece(newPos).getTeamColor() != piece.getTeamColor()) {
+                                ChessMove newMove = new ChessMove(myPos, newPos, null);
                                 pawnMoves.add(newMove);
                             }
-                        }
-                    } else {
-                        if (board.getPiece(newPos) != null && board.getPiece(newPos).getTeamColor() != piece.getTeamColor()) {
-                            ChessMove newMove = new ChessMove(myPos, newPos, null);
-                            pawnMoves.add(newMove);
                         }
                     }
                 }

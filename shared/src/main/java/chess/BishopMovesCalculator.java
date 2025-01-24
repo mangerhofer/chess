@@ -56,7 +56,7 @@ public class BishopMovesCalculator {
                 }
             }
         }
-        for (int i = 1; i < topRight+1; i++) {
+        for (int i = 1; i <= topRight+1; i++) {
             ChessPosition newPos = new ChessPosition(x+i, y+i);
             if (newPos.getRow() <= 8 && newPos.getColumn() <= 8) {
                 if (board.getPiece(newPos) == null) {
