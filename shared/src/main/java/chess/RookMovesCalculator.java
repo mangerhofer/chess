@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class RookMovesCalculator {
-    private static Collection<ChessMove> rookMoves = new ArrayList<>();
+    private static final Collection<ChessMove> rookMoves = new ArrayList<>();
 
     public static Collection<ChessMove> validRookMoves(ChessBoard board, ChessPosition myPos) {
         rookMoves.clear();
@@ -16,9 +16,9 @@ public class RookMovesCalculator {
             ChessPosition newPos = new ChessPosition(x, i);
             if (newPos.getColumn() >= 1) {
                 if (board.getPiece(newPos) == null) {
-                    getRookMoves(board, myPos, newPos);
+                    rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, newPos));
                 } else if (board.getPiece(newPos) != null) {
-                    getRookMoves(board, myPos, newPos);
+                    rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, newPos));
                     break;
                 } else {
                     break;
@@ -30,9 +30,9 @@ public class RookMovesCalculator {
             ChessPosition newPos = new ChessPosition(x, i);
             if (newPos.getColumn() <= 8) {
                 if (board.getPiece(newPos) == null) {
-                    getRookMoves(board, myPos, newPos);
+                    rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, newPos));
                 } else if (board.getPiece(newPos) != null) {
-                    getRookMoves(board, myPos, newPos);
+                    rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, newPos));
                     break;
                 } else {
                     break;
@@ -44,9 +44,9 @@ public class RookMovesCalculator {
             ChessPosition newPos = new ChessPosition(i, y);
             if (newPos.getRow() >= 1) {
                 if(board.getPiece(newPos) == null) {
-                    getRookMoves(board, myPos, newPos);
+                    rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, newPos));
                 } else if (board.getPiece(newPos) != null) {
-                    getRookMoves(board, myPos, newPos);
+                    rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, newPos));
                     break;
                 } else {
                     break;
@@ -58,9 +58,9 @@ public class RookMovesCalculator {
             ChessPosition newPos = new ChessPosition(i, y);
             if (newPos.getRow() <= 8) {
                 if (board.getPiece(newPos) == null) {
-                    getRookMoves(board, myPos, newPos);
+                    rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, newPos));
                 } else if (board.getPiece(newPos) != null) {
-                    getRookMoves(board, myPos, newPos);
+                    rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, newPos));
                     break;
                 } else {
                     break;
@@ -69,18 +69,5 @@ public class RookMovesCalculator {
         }
 
         return rookMoves;
-    }
-
-    public static void getRookMoves(ChessBoard board, ChessPosition myPos, ChessPosition newPos) {
-        ChessPiece piece = board.getPiece(myPos);
-        ChessMove move;
-
-        if (board.getPiece(newPos) == null) {
-            move = new ChessMove(myPos, newPos, null);
-            rookMoves.add(move);
-        } else if (board.getPiece(newPos) != null && board.getPiece(newPos).getTeamColor() != piece.getTeamColor()) {
-            move = new ChessMove(myPos, newPos, null);
-            rookMoves.add(move);
-        }
     }
 }

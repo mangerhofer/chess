@@ -16,7 +16,7 @@ public class PawnMovesCalculator {
 
         //White Pawn
         if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-            if (myPos.getRow() == 2) {
+            if (x == 2) {
                 for (int[] move : possWhiteMoves) {
                     ChessPosition newPos = new ChessPosition(move[0] + x, move[1] + y);
                     if (newPos.getRow() >= 1 && newPos.getRow() <= 8 && newPos.getColumn() >= 1 && newPos.getColumn() <= 8) {
@@ -39,26 +39,26 @@ public class PawnMovesCalculator {
                         }
                     }
                 }
-            } else if (myPos.getRow() <= 7) {
+            } else if (x <= 7) {
                 ChessPosition pos1 = new ChessPosition(x+1, y);
                 ChessPosition pos2 = new ChessPosition(x+1, y+1);
                 ChessPosition pos3 = new ChessPosition(x+1, y-1);
-                if (myPos.getColumn() > 1 && myPos.getColumn() < 8) {
-                    if (myPos.getRow() < 7) {
+                if (y > 1 && y < 8) {
+                    if (x < 7) {
                         getPawnMoves(board, myPos, pos1, pos2, pos3);
-                    } else if (myPos.getRow() == 7) {
+                    } else {
                         getPawnPromo(board, myPos, pos1, pos2, pos3);
                     }
-                } else if (myPos.getColumn() == 1) {
-                    if (myPos.getRow() < 7) {
+                } else if (y == 1) {
+                    if (x < 7) {
                         getPawnMoves(board, myPos, pos1, pos2, pos1);
-                    } else if (myPos.getRow() == 7) {
+                    } else {
                         getPawnPromo(board, myPos, pos1, pos2, pos1);
                     }
-                } else if (myPos.getColumn() == 8) {
-                    if (myPos.getRow() < 7) {
+                } else {
+                    if (x < 7) {
                         getPawnMoves(board, myPos, pos1, pos1, pos3);
-                    } else if (myPos.getRow() == 7) {
+                    } else {
                         getPawnPromo(board, myPos, pos1, pos1, pos3);
                     }
                 }
@@ -67,7 +67,7 @@ public class PawnMovesCalculator {
 
         //Black Pawn
         if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-            if (myPos.getRow() == 7) {
+            if (x == 7) {
                 for (int[] move: possBlackMoves) {
                     ChessPosition newPos = new ChessPosition(move[0]+x, move[1]+y);
                     if (newPos.getRow() >= 1 && newPos.getRow() <= 8 && newPos.getColumn() >= 1 && newPos.getColumn() <= 8) {
@@ -90,26 +90,26 @@ public class PawnMovesCalculator {
                         }
                     }
                 }
-            } else if (myPos.getRow() >= 2) {
+            } else if (x >= 2) {
                 ChessPosition pos1 = new ChessPosition(x-1, y);
                 ChessPosition pos2 = new ChessPosition(x-1, y+1);
                 ChessPosition pos3 = new ChessPosition(x-1, y-1);
-                if (myPos.getColumn() > 1 && myPos.getColumn() < 8) {
-                    if (myPos.getRow() > 2) {
+                if (y > 1 && y < 8) {
+                    if (x > 2) {
                         getPawnMoves(board, myPos, pos1, pos2, pos3);
-                    } else if (myPos.getRow() == 2) {
+                    } else {
                         getPawnPromo(board, myPos, pos1, pos2, pos3);
                     }
-                } else if (myPos.getColumn() == 1) {
-                    if (myPos.getRow() > 2) {
+                } else if (y == 1) {
+                    if (x > 2) {
                         getPawnMoves(board, myPos, pos1, pos2, pos1);
-                    } else if (myPos.getRow() == 2) {
+                    } else {
                         getPawnPromo(board, myPos, pos1, pos2, pos1);
                     }
-                } else if (myPos.getColumn() == 8) {
-                    if (myPos.getRow() > 2) {
+                } else {
+                    if (x > 2) {
                         getPawnMoves(board, myPos, pos1, pos1, pos3);
-                    } else if (myPos.getRow() == 2) {
+                    } else {
                         getPawnPromo(board, myPos, pos1, pos1, pos3);
                     }
                 }
@@ -138,17 +138,17 @@ public class PawnMovesCalculator {
     public static void getPawnPromo(ChessBoard board, ChessPosition myPos, ChessPosition pos1, ChessPosition pos2, ChessPosition pos3) {
         ChessPiece piece = board.getPiece(myPos);
         if (board.getPiece(pos1) == null) {
-            possiblePawnMoves(board, myPos, pos1);
+            possiblePawnMoves(myPos, pos1);
         }
         if (board.getPiece(pos2) != null && board.getPiece(pos2).getTeamColor() != piece.getTeamColor()) {
-            possiblePawnMoves(board, myPos, pos2);
+            possiblePawnMoves(myPos, pos2);
         }
         if (board.getPiece(pos3) != null && board.getPiece(pos3).getTeamColor() != piece.getTeamColor()) {
-            possiblePawnMoves(board, myPos, pos3);
+            possiblePawnMoves(myPos, pos3);
         }
     }
 
-    public static void possiblePawnMoves(ChessBoard board, ChessPosition myPos, ChessPosition newPos) {
+    public static void possiblePawnMoves(ChessPosition myPos, ChessPosition newPos) {
         ChessMove move = new ChessMove(myPos, newPos, ChessPiece.PieceType.QUEEN);
         pawnMoves.add(move);
         move = new ChessMove(myPos, newPos, ChessPiece.PieceType.KNIGHT);
