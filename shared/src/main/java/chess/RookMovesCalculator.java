@@ -11,62 +11,14 @@ public class RookMovesCalculator {
         int x = myPos.getRow();
         int y = myPos.getColumn();
 
-        //Checking east
-        for (int i = y-1; i >= 1; i--) {
-            ChessPosition newPos = new ChessPosition(x, i);
-            if (newPos.getColumn() >= 1) {
-                if (board.getPiece(newPos) == null) {
-                    rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, newPos));
-                } else if (board.getPiece(newPos) != null) {
-                    rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, newPos));
-                    break;
-                } else {
-                    break;
-                }
-            }
-        }
+        //Checking East
+        rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, y-1, 0, 0, 1, x, 0));
         //Checking West
-        for (int i = y+1; i <= 8; i++) {
-            ChessPosition newPos = new ChessPosition(x, i);
-            if (newPos.getColumn() <= 8) {
-                if (board.getPiece(newPos) == null) {
-                    rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, newPos));
-                } else if (board.getPiece(newPos) != null) {
-                    rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, newPos));
-                    break;
-                } else {
-                    break;
-                }
-            }
-        }
+        rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, y+1, 9, 0, 1, x, 0));
         //Checking South
-        for (int i = x-1; i >= 1; i--) {
-            ChessPosition newPos = new ChessPosition(i, y);
-            if (newPos.getRow() >= 1) {
-                if(board.getPiece(newPos) == null) {
-                    rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, newPos));
-                } else if (board.getPiece(newPos) != null) {
-                    rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, newPos));
-                    break;
-                } else {
-                    break;
-                }
-            }
-        }
+        rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, x-1, 0, 1, 0, 0, y));
         //Checking North
-        for (int i = x+1; i <= 8; i++) {
-            ChessPosition newPos = new ChessPosition(i, y);
-            if (newPos.getRow() <= 8) {
-                if (board.getPiece(newPos) == null) {
-                    rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, newPos));
-                } else if (board.getPiece(newPos) != null) {
-                    rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, newPos));
-                    break;
-                } else {
-                    break;
-                }
-            }
-        }
+        rookMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, x+1, 9, 1, 0, 0, y));
 
         return rookMoves;
     }

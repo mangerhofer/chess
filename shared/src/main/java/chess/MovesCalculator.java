@@ -8,7 +8,6 @@ public class MovesCalculator {
 
     public static Collection<ChessMove> calculateKMoves(ChessBoard board, ChessPosition myPos, int[][] possMoves) {
         pieceMoves.clear();
-        ChessPiece piece = board.getPiece(myPos);
         int x = myPos.getRow();
         int y = myPos.getColumn();
 
@@ -22,21 +21,25 @@ public class MovesCalculator {
         return pieceMoves;
     }
 
-    public static Collection<ChessMove> calculateBRMoves(ChessBoard board, ChessPosition myPos, ChessPosition newPos) {
+    public static Collection<ChessMove> calculateBRMoves(ChessBoard board, ChessPosition myPos, int start, int stop, int newX, int newY, int x, int y) {
         pieceMoves.clear();
+        int step = 1;
 
-//        for (int i = forStart; i < forEnd; i++) {
-//            if (board.getPiece(newPos) == null) {
-//                getPieceMoves(board, myPos, newPos);
-//            } else if (board.getPiece(newPos) != null) {
-//                getPieceMoves(board, myPos, newPos);
-//                break;
-//            } else {
-//                break;
-//            }
-//        }
+        if (start > stop) {
+            step = -1;
+        }
 
-        getPieceMoves(board, myPos, newPos);
+        for (int i = start; i != stop; i += step) {
+            ChessPosition newPos = new ChessPosition(x + i * newX, y + i * newY);
+            if (newPos.getRow() >= 1 && newPos.getRow() <= 8 && newPos.getColumn() >= 1 && newPos.getColumn() <= 8) {
+                if (board.getPiece(newPos) == null) {
+                    getPieceMoves(board, myPos, newPos);
+                } else if (board.getPiece(newPos) != null) {
+                    getPieceMoves(board, myPos, newPos);
+                    break;
+                }
+            }
+        }
 
         return pieceMoves;
     }
