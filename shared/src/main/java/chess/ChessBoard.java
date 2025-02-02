@@ -17,6 +17,18 @@ public class ChessBoard {
         
     }
 
+    public ChessBoard(ChessBoard board) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                this.board[i][j] = board.board[i][j];
+            }
+        }
+    }
+
+    public ChessPiece[][] getBoard() {
+        return board;
+    }
+
     /**
      * Adds a chess piece to the chessboard
      *
@@ -70,6 +82,14 @@ public class ChessBoard {
         for (int col = 0; col < 8; col++) {
             for (int row = 2; row < 6; row++) {
                 board[row][col] = null;
+            }
+        }
+    }
+
+    public void copyBoard(ChessBoard board) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                this.board[i][j] = board.board[i][j];
             }
         }
     }

@@ -34,6 +34,22 @@ public class ChessPosition {
         return col;
     }
 
+    public ChessPosition findBWKing(ChessBoard board, ChessGame.TeamColor teamColor) {
+        ChessPosition kingPos = null;
+
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                ChessPosition pos = new ChessPosition(i, j);
+                if (board.getPiece(pos) != null && board.getPiece(pos).getPieceType() == ChessPiece.PieceType.KING && board.getPiece(pos).getTeamColor() == teamColor) {
+                    kingPos = pos;
+                    break;
+                }
+            }
+        }
+
+        return kingPos;
+    }
+
     @Override
     public String toString() {
         return "ChessPosition{" +
