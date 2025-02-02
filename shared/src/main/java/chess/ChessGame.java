@@ -11,7 +11,7 @@ import java.util.Collection;
  */
 public class ChessGame {
 
-    private TeamColor team;
+    private TeamColor team = TeamColor.WHITE;
     private ChessBoard board;
 
     private final Collection<ChessMove> validPieceMoves = new ArrayList<>();
@@ -45,10 +45,12 @@ public class ChessGame {
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        TeamColor firstTurn = TeamColor.WHITE;
-        if (team == null) {
-            this.team = firstTurn;
+        if (team == TeamColor.WHITE && turnTracker%2 == 1) {
+            this.team = TeamColor.BLACK;
+        } else if (team == TeamColor.BLACK && turnTracker%2 == 0) {
+            this.team = TeamColor.WHITE;
         }
+
         return team;
     }
 
