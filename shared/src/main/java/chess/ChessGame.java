@@ -11,7 +11,7 @@ import java.util.Collection;
  */
 public class ChessGame {
 
-    private TeamColor team = null;
+    private TeamColor team = TeamColor.WHITE;
     private ChessBoard board;
 
     private final Collection<ChessMove> validPieceMoves = new ArrayList<>();
@@ -28,7 +28,6 @@ public class ChessGame {
     Collection<ChessMove> checkmateBlackMoves = new ArrayList<>();
 
     private int validMovesCounter = 0;
-    private int turnTracker = 0;
 
     private boolean whiteInCheck = false;
     private boolean blackInCheck = false;
@@ -45,17 +44,15 @@ public class ChessGame {
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        TeamColor firstTurn = TeamColor.WHITE;
-        if (team == null) {
-            this.team = firstTurn;
-        } else {
-            if (turnTracker%2 == 0) {
-                this.team = TeamColor.WHITE;
-            } else {
-                this.team = TeamColor.BLACK;
-            }
-        }
         return team;
+    }
+
+    public void updateTeamTurn() {
+        if (team == TeamColor.BLACK) {
+            team = TeamColor.WHITE;
+        } else {
+            team = TeamColor.BLACK;
+        }
     }
 
     /**
@@ -237,7 +234,7 @@ public class ChessGame {
             }
 
             board.addPiece(startPosition, null);
-            turnTracker ++;
+            updateTeamTurn();
         } else {
             throw new InvalidMoveException();
         }
@@ -310,12 +307,12 @@ public class ChessGame {
         if (checkValidMovesArray.contains(move)) {
             newValidMoves = new ArrayList<>(checkPromotion(startPosition, endPosition, promoPiece, teamColor));
             if (promoPiece == null) {
-                if (turnTracker%2 == 0 && getBoard().getPiece(startPosition).getTeamColor() != TeamColor.WHITE) {
-                    if (getBoard().getPiece(startPosition).getTeamColor() == getTeamTurn()) {
+                if (getBoard().getPiece(startPosition).getTeamColor() != TeamColor.WHITE) {
+                    if (getBoard().getPiece(startPosition).getTeamColor() != getTeamTurn()) {
                         throw new InvalidMoveException();
                     }
-                } else if (turnTracker%2 == 1 && getBoard().getPiece(startPosition).getTeamColor() != TeamColor.BLACK) {
-                    if (getBoard().getPiece(startPosition).getTeamColor() == getTeamTurn()) {
+                } else if (getBoard().getPiece(startPosition).getTeamColor() != TeamColor.BLACK) {
+                    if (getBoard().getPiece(startPosition).getTeamColor() != getTeamTurn()) {
                         throw new InvalidMoveException();
                     }
                 }
