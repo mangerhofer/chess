@@ -1,33 +1,32 @@
 package dataaccess;
 
 import model.AuthData;
+import model.UserData;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-public class AuthDAO {
-    Collection<AuthData> userTokens;
-    private int nextId = 1;
-    final private HashMap<Integer, AuthData> tokens = new HashMap<>();
+import java.util.*;
 
-    public AuthData createAuthToken(AuthData token) throws DataAccessException {
-        token = new AuthData(token.authToken(), token.username());
-        nextId++;
-        tokens.put(nextId, token);
+public class AuthDAO implements AuthInterface {
+    final private LinkedHashMap<String, AuthData> tokens = new LinkedHashMap<>();
+    final private LinkedHashMap<String, String> authTokenMap = new LinkedHashMap<>();
 
-        return token;
+    public AuthData createAuthToken(UserData user, String username, String password) throws DataAccessException {
+        if (Objects.equals(user.password(), password)) {
+            String auth = UUID.randomUUID().toString();
+            AuthData token = new AuthData(auth, username);
+            tokens.put(auth, token);
+            authTokenMap.put(auth, username);
+            return token;
+        } else {
+            throw new DataAccessException(500, "Invalid username or password");
+        }
     }
 
-    public Collection<AuthData> listGames() throws DataAccessException {
-        return List.of();
-    }
+    public AuthData getAuthToken(String username) {
+        String tokenValue = null;
 
-    public AuthData getAuthToken(AuthData token) throws DataAccessException {
-        int tokenValue = 0;
-        for (Map.Entry<Integer, AuthData> possToken : tokens.entrySet()) {
-            if (possToken.getValue().equals(token)) {
+        for (Map.Entry<String, String> possToken : authTokenMap.entrySet()) {
+            if (possToken.getValue().equals(username)) {
                 tokenValue = possToken.getKey();
             }
         }
@@ -35,20 +34,29 @@ public class AuthDAO {
         return tokens.get(tokenValue);
     }
 
-    public void deleteAuthToken(AuthData token) throws DataAccessException {
-        int tokenValue = 0;
-        for (Map.Entry<Integer, AuthData> possToken : tokens.entrySet()) {
-            if (possToken.getValue().equals(token)) {
-                tokenValue = possToken.getKey();
+    public String getUserFromAuthToken(String authToken) {
+        String username = null;
+
+        for (Map.Entry<String, String> possToken : authTokenMap.entrySet()) {
+            if (possToken.getKey().equals(authToken)) {
+                username = possToken.getValue();
             }
         }
 
-        tokens.remove(tokenValue);
-        userTokens.remove(token);
+        return username;
+    }
+
+    public Collection<AuthData> getAllAuthTokens() {
+        return tokens.values();
+    }
+
+    public void deleteAuthToken(String authToken) {
+        tokens.remove(authToken);
+        authTokenMap.remove(authToken);
     }
 
     public void deleteAllAuthTokens() throws DataAccessException {
-        userTokens.clear();
         tokens.clear();
+        authTokenMap.clear();
     }
 }
