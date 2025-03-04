@@ -40,7 +40,7 @@ public class AuthDAOTest {
 
         AuthData user1 = dataAccess.createAuthToken(user,"joe", "joepassword");
 
-        String username = dataAccess.getUserFromAuthToken(user1.authToken());
+        String username = dataAccess.getUserFromAuthToken(user1);
 
         assertEquals("joe", username);
     }
@@ -72,10 +72,11 @@ public class AuthDAOTest {
 
         List<AuthData> expected = new ArrayList<>();
         var deleteAuthToken = dataAccess.createAuthToken(user,"joe", "joepassword");
+        expected.add(deleteAuthToken);
         expected.add(dataAccess.createAuthToken(user2,"sally", "sallypassword"));
         expected.add(dataAccess.createAuthToken(user3,"fred", "fredpassword"));
 
-        dataAccess.deleteAuthToken(deleteAuthToken.authToken());
+        dataAccess.deleteAuthToken(deleteAuthToken);
 
         var actual = dataAccess.getAllAuthTokens();
         assertAuthTokenCollectionEqual(expected, actual);

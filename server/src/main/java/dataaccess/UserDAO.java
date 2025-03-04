@@ -11,7 +11,10 @@ public class UserDAO implements UserInterface {
     public UserData createUser(String username, String password, String email) {
         UserData u = new UserData(username, password, email);
 
-        users.put(username, u);
+        if (!users.containsKey(username)) {
+            users.put(username, u);
+        }
+
         return u;
     }
 

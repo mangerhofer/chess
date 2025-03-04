@@ -1,5 +1,10 @@
 import chess.*;
+import dataaccess.AuthDAO;
+import dataaccess.GameDAO;
+import dataaccess.UserDAO;
+import model.GameData;
 import server.Server;
+import service.UserService;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,7 +17,12 @@ public class Main {
                 port = Integer.parseInt(args[0]);
             }
 
-            port = new Server().run(port);
+            UserDAO userDAO = new UserDAO();
+            AuthDAO authDAO = new AuthDAO();
+            GameDAO gameDAO = new GameDAO();
+
+            var userService = new UserService(userDAO, authDAO);
+            port = new Server(userService).run(port);
             System.out.printf("Server started on port %d%n", port);
             return;
         } catch (Throwable ex) {
