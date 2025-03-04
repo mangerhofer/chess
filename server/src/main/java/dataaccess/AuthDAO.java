@@ -56,7 +56,7 @@ public class AuthDAO implements AuthInterface {
 
     public void deleteAuthToken(AuthData authToken) {
         tokens.remove(authToken.toString());
-        authTokenMap.remove(authToken.toString());
+        authTokenMap.remove(authToken);
     }
 
     public void deleteAllAuthTokens() throws DataAccessException {

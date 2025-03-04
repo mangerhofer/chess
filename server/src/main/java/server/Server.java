@@ -1,12 +1,14 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.AuthDAO;
 import dataaccess.AuthInterface;
 import dataaccess.DataAccessException;
 import dataaccess.UserInterface;
 import model.AuthData;
 import model.RegisterResult;
 import model.UserData;
+import org.junit.jupiter.params.ParameterizedTest;
 import service.UserService;
 import spark.*;
 
@@ -28,15 +30,11 @@ public class Server {
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::register);
         Spark.post("/session", this::login);
-//        Spark.delete("/session", this::logout);
-//        Spark.get("/game", Server::listGames);
-//        Spark.post("/game", Server::createGame);
-//        Spark.put("/game", Server::joinGame);
+        Spark.delete("/session", this::logout);
+//        Spark.get("/game", this::listGames);
+//        Spark.post("/game", this::createGame);
+//        Spark.put("/game", this::joinGame);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
-//        Spark.notFound((req, res) -> {
-//            var msg = String.format("[%s] %s not found", req.requestMethod(), req.pathInfo());
-//            return exceptionHandler(new DataAccessException(,msg));
-//        });
         Spark.delete("/db", this::deleteAllData);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
@@ -77,18 +75,24 @@ public class Server {
     private Object login(Request req, Response res) throws DataAccessException {
         UserData user = new Gson().fromJson(req.body(), UserData.class);
 
-        var users = userService.listUsers();
-//        if (users.contains(user)) {
-            var authData = userService.login(user.username(), user.password());
-            res.status(200);
-            return new Gson().toJson(authData);
-//        } else if (user.password().equals())
+        var authData = userService.login(user.username(), user.password());
+        res.status(200);
+        return new Gson().toJson(authData);
     }
 
-//    private Object logout(Request req, Response res) throws DataAccessException {
-//        UserData user = new Gson().fromJson(req.body(), UserData.class);
-////        var authData = userService.logout(user.username(), )
-//    }
+    private Object logout(Request req, Response res) throws DataAccessException {
+        AuthData user = new Gson().fromJson(req.body(), AuthData.class);
+        userService.logout(user);
+        var authTokens = userService.listAuthTokens();
+
+        if (!authTokens.contains(user)) {
+            res.status(200);
+            return "";
+        } else {
+            throw new DataAccessException(401, "unauthorized");
+        }
+
+    }
 
     private Object deleteAllData(Request req, Response res) throws DataAccessException {
         userService.deleteAllUsers();

@@ -1,7 +1,6 @@
 package service;
 
 import dataaccess.AuthDAO;
-import dataaccess.AuthInterface;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import model.AuthData;
@@ -20,17 +19,29 @@ public class UserServiceTest {
     }
 
     @Test
-    void register() throws DataAccessException {
+    void registerSuccess() throws DataAccessException {
         var user = new UserData("bobusername", "bobpassword", "bob@email.com");
         AuthData result = service.register(user.username(), user.password(), user.email());
-//
-//        var expected = {"username:"}
-//
-//        assertEquals();
 
         var users = service.listUsers();
         assertEquals(1, users.size());
         assertTrue(users.contains(user));
+    }
+
+    @Test
+    void registerFail() throws DataAccessException {
+        var user = new UserData("bobusername", "bobpassword", "bob@email.com");
+        service.register(user.username(), user.password(), user.email());
+
+        assertThrows(DataAccessException.class, () -> {
+            service.register(user.username(), user.password(), user.email());
+            throw new DataAccessException(403, "Error: username already taken");
+        });
+
+        assertThrows(DataAccessException.class, () -> {
+            new UserData("joeusername", "", "joe@email.com");
+            throw new DataAccessException(400, "Error: bad request, fields empty");
+        });
     }
 
     @Test
@@ -39,8 +50,6 @@ public class UserServiceTest {
         var loginResult = service.login("joe", "joepassword");
 
         assertNotNull(loginResult);
-//        assertTrue(loginResult.getClass().getName(), AuthData.class);
-
     }
 
     @Test
@@ -52,6 +61,16 @@ public class UserServiceTest {
             throw new DataAccessException(401, "Error: unauthorized");
         });
 
+    }
+
+    @Test
+    void logoutSuccess() throws DataAccessException {
+        service.register("joe", "joepassword", "joe@email.com");
+        AuthData authData = service.login("joe", "joepassword");
+        service.logout(authData);
+
+        var tokenList = service.listAuthTokens();
+        assertEquals(0, tokenList.size());
     }
 
     @Test

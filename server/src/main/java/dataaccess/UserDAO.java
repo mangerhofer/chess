@@ -4,6 +4,7 @@ import model.UserData;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.Objects;
 
 public class UserDAO implements UserInterface {
     final private LinkedHashMap<String, UserData> users = new LinkedHashMap<>();
@@ -32,5 +33,22 @@ public class UserDAO implements UserInterface {
 
     public void deleteAllUsers() {
         users.clear();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UserDAO userDAO = (UserDAO) o;
+        return Objects.equals(users, userDAO.users);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(users);
     }
 }

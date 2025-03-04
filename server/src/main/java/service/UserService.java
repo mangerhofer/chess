@@ -20,7 +20,6 @@ public class UserService {
     }
 
     public AuthData register(String username, String password, String email) throws DataAccessException {
-        var users = userInterface.listUsers();
         UserData user = userInterface.createUser(username, password, email);
         return authInterface.createAuthToken(user, user.username(), user.password());
     }
@@ -31,17 +30,21 @@ public class UserService {
 
     public AuthData login(String username, String password) throws DataAccessException {
         UserData user = userInterface.getUser(username);
+        var users = listUsers();
 
-        if (user.password().equals(password)) {
-            return authInterface.createAuthToken(user, username, password);
+        if (!users.contains(user)) {
+            throw new DataAccessException(401, "unauthorized");
         } else {
-            throw new DataAccessException(401, "Error: Invalid password");
+            return authInterface.createAuthToken(user, username, password);
         }
-//        return authInterface.createAuthToken(user, username, password);
     }
 
     public void logout(AuthData authToken) throws DataAccessException {
         authInterface.deleteAuthToken(authToken);
+    }
+
+    public Collection<AuthData> listAuthTokens() throws DataAccessException {
+        return authInterface.getAllAuthTokens();
     }
 
     public void deleteUser(String username) throws DataAccessException {
