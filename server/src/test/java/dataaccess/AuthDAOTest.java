@@ -72,11 +72,10 @@ public class AuthDAOTest {
 
         List<AuthData> expected = new ArrayList<>();
         var deleteAuthToken = dataAccess.createAuthToken(user,"joe", "joepassword");
-        expected.add(deleteAuthToken);
         expected.add(dataAccess.createAuthToken(user2,"sally", "sallypassword"));
         expected.add(dataAccess.createAuthToken(user3,"fred", "fredpassword"));
 
-        dataAccess.deleteAuthToken(deleteAuthToken);
+        dataAccess.deleteAuthToken(deleteAuthToken.authToken());
 
         var actual = dataAccess.getAllAuthTokens();
         assertAuthTokenCollectionEqual(expected, actual);

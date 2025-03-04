@@ -10,6 +10,7 @@ public interface AuthInterface {
     AuthData getAuthToken(String username) throws DataAccessException;
     String getUserFromAuthToken(AuthData authToken) throws DataAccessException;
     Collection<AuthData> getAllAuthTokens() throws DataAccessException;
-    void deleteAuthToken(AuthData authToken) throws DataAccessException;
+    Collection<String> getStringAuthTokens() throws DataAccessException;
+    void deleteAuthToken(String authToken) throws DataAccessException;
     void deleteAllAuthTokens() throws DataAccessException;
 }

@@ -4,9 +4,7 @@ import dataaccess.DataAccessException;
 import dataaccess.UserInterface;
 import dataaccess.AuthInterface;
 import model.AuthData;
-import model.RegisterResult;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 
 import java.util.Collection;
 
@@ -39,8 +37,13 @@ public class UserService {
         }
     }
 
-    public void logout(AuthData authToken) throws DataAccessException {
-        authInterface.deleteAuthToken(authToken);
+    public void logout(String authToken) throws DataAccessException {
+        var tokenList = authInterface.getStringAuthTokens();
+        if (!tokenList.contains(authToken)) {
+            throw new DataAccessException(401, "unauthorized");
+        } else {
+            authInterface.deleteAuthToken(authToken);
+        }
     }
 
     public Collection<AuthData> listAuthTokens() throws DataAccessException {

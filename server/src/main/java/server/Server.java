@@ -1,18 +1,12 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.AuthDAO;
-import dataaccess.AuthInterface;
 import dataaccess.DataAccessException;
-import dataaccess.UserInterface;
 import model.AuthData;
-import model.RegisterResult;
 import model.UserData;
-import org.junit.jupiter.params.ParameterizedTest;
 import service.UserService;
 import spark.*;
 
-import javax.xml.crypto.Data;
 import java.util.Map;
 
 public class Server {
@@ -62,13 +56,13 @@ public class Server {
 
         if (user.username() == null || user.password() == null || user.email() == null) {
             res.status(400);
-            throw new DataAccessException(400, "Error: bad request, fields empty");
+            throw new DataAccessException(400, "bad request, fields empty");
         } else if (!users.contains(user)) {
             res.status(200);
             return userService.register(user.username(), user.password(), user.email());
         } else {
             res.status(403);
-            throw new DataAccessException(403, "Error: username already taken");
+            throw new DataAccessException(403, "username already taken");
         }
     }
 
@@ -81,17 +75,11 @@ public class Server {
     }
 
     private Object logout(Request req, Response res) throws DataAccessException {
-        AuthData user = new Gson().fromJson(req.body(), AuthData.class);
-        userService.logout(user);
-        var authTokens = userService.listAuthTokens();
+        String authToken = new Gson().fromJson(req.headers("authorization"), String.class);
+        userService.logout(authToken);
 
-        if (!authTokens.contains(user)) {
-            res.status(200);
-            return "";
-        } else {
-            throw new DataAccessException(401, "unauthorized");
-        }
-
+        res.status(200);
+        return "";
     }
 
     private Object deleteAllData(Request req, Response res) throws DataAccessException {

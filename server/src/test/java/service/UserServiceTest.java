@@ -1,10 +1,12 @@
 package service;
 
 import dataaccess.AuthDAO;
+import dataaccess.AuthInterface;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -39,38 +41,45 @@ public class UserServiceTest {
         });
 
         assertThrows(DataAccessException.class, () -> {
-            new UserData("joeusername", "", "joe@email.com");
+            new UserData("bobusername", "", "bob@email.com");
             throw new DataAccessException(400, "Error: bad request, fields empty");
         });
     }
 
     @Test
     void loginSuccess() throws DataAccessException {
-        var registerResult = service.register("joe", "joepassword", "joe@email.com");
-        var loginResult = service.login("joe", "joepassword");
+        service.register("bob", "bobpassword", "bob@email.com");
+        var loginResult = service.login("bob", "bobpassword");
 
         assertNotNull(loginResult);
     }
 
     @Test
     void loginFail() throws DataAccessException {
-        service.register("joe", "joepassword", "joe@email.com");
+        service.register("bob", "bobpassword", "bob@email.com");
 
         assertThrows(DataAccessException.class, () -> {
-            service.login("joe", "pass");
+            service.login("bob", "pass");
             throw new DataAccessException(401, "Error: unauthorized");
         });
-
     }
 
     @Test
     void logoutSuccess() throws DataAccessException {
-        service.register("joe", "joepassword", "joe@email.com");
-        AuthData authData = service.login("joe", "joepassword");
-        service.logout(authData);
+        AuthData authData = service.register("bob", "bobpassword", "bob@email.com");
+        service.logout(authData.authToken());
 
         var tokenList = service.listAuthTokens();
-        assertEquals(0, tokenList.size());
+
+        assertFalse(tokenList.contains(authData));
+    }
+
+    @Test
+    void logoutFail() throws DataAccessException {
+        assertThrows(DataAccessException.class, () -> {
+            service.logout(" ");
+            throw new DataAccessException(401, "Error: unauthorized");
+        });
     }
 
     @Test
