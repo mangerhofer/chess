@@ -2,12 +2,14 @@ package dataaccess;
 
 import chess.ChessGame;
 import model.AuthData;
+import model.ListGameResult;
 import model.GameData;
 
 import java.util.*;
 
 public class GameDAO implements GameInterface {
     final private LinkedHashMap<Integer, GameData> games = new LinkedHashMap<>();
+    final private LinkedHashMap<Integer, ListGameResult> listGames = new LinkedHashMap<>();
 
     public GameData createGame(String gameName) {
         ChessGame chessGame = new ChessGame();
@@ -15,8 +17,10 @@ public class GameDAO implements GameInterface {
         int max = 9999, min = 1000;
         int gameID = rand.nextInt(max - min +1) + min;
 
-        GameData game = new GameData(gameID, null, null, gameName, chessGame);
+        GameData game = new GameData(gameID, "", "", gameName, chessGame);
+        ListGameResult createGameResult = new ListGameResult(gameID, "", "", gameName);
         games.put(gameID, game);
+        listGames.put(gameID, createGameResult);
 
         return game;
     }
@@ -37,25 +41,47 @@ public class GameDAO implements GameInterface {
     }
 
     @Override
-    public GameData joinGame(int gameID, String playerColor, AuthData authToken) throws DataAccessException {
+    public GameData joinGame(int gameID, String playerColor, AuthData authToken, String username) throws DataAccessException {
         GameData game = games.get(gameID);
+        ListGameResult gameResult = listGames.get(gameID);
 
         games.replace(gameID, game, null);
+        listGames.replace(gameID, gameResult, null);
 
-        String username = authToken.username();
-        if (Objects.equals(playerColor, "BLACK")) {
-            game = game.setBlackUsername(username);
-        } else if (Objects.equals(playerColor, "WHITE")) {
-            game = game.setWhiteUsername(username);
+        if (playerColor == null) {
+            throw new DataAccessException(400, "bad request");
+        } else {
+            if (playerColor.equals("BLACK")) {
+                if (game.blackUsername().isEmpty()) {
+                    game = game.setBlackUsername(username);
+                    gameResult = gameResult.setBlackUsername(username);
+                } else {
+                    throw new DataAccessException(403, "already taken");
+                }
+            } else if (playerColor.equals("WHITE")) {
+                if (game.whiteUsername().isEmpty()) {
+                    game = game.setWhiteUsername(username);
+                    gameResult = gameResult.setWhiteUsername(username);
+                } else {
+                    throw new DataAccessException(403, "already taken");
+                }
+            } else {
+                throw new DataAccessException(400, "bad request");
+            }
         }
 
         games.replace(gameID, null, game);
+        listGames.replace(gameID, null, gameResult);
 
         return game;
     }
 
     public Collection<GameData> listGames() {
         return games.values();
+    }
+
+    public Collection<ListGameResult> listGameResults() {
+        return listGames.values();
     }
 
     public GameData getGame(int gameID) {

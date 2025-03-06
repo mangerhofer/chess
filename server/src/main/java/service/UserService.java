@@ -22,10 +22,6 @@ public class UserService {
         return authInterface.createAuthToken(user, user.username(), user.password());
     }
 
-    public Collection<UserData> listUsers() throws DataAccessException {
-        return userInterface.listUsers();
-    }
-
     public AuthData login(String username, String password) throws DataAccessException {
         UserData user = userInterface.getUser(username);
         var users = listUsers();
@@ -46,15 +42,29 @@ public class UserService {
         }
     }
 
+    public Collection<UserData> listUsers() throws DataAccessException {
+        return userInterface.listUsers();
+    }
+
     public Collection<AuthData> listAuthTokens() throws DataAccessException {
         return authInterface.getAllAuthTokens();
     }
 
-    public void deleteUser(String username) throws DataAccessException {
-        userInterface.deleteUser(username);
+    public Collection<String> listStringAuthTokens() throws DataAccessException {
+        return authInterface.getStringAuthTokens();
+    }
+
+    public AuthData getAuthToken(String authToken) throws DataAccessException {
+        String username = authInterface.getUsernameFromAuthToken(authToken);
+        return authInterface.getAuthToken(username);
+    }
+
+    public String getUsername(String authToken) throws DataAccessException {
+        return authInterface.getUsernameFromAuthToken(authToken);
     }
 
     public void deleteAllUsers() throws DataAccessException {
         userInterface.deleteAllUsers();
+        authInterface.deleteAllAuthTokens();
     }
 }

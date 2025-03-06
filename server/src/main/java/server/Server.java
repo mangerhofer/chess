@@ -1,19 +1,28 @@
 package server;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import dataaccess.AuthInterface;
 import dataaccess.DataAccessException;
-import model.AuthData;
-import model.UserData;
+import dataaccess.UserInterface;
+import model.*;
+import service.GameService;
 import service.UserService;
 import spark.*;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public class Server {
     private final UserService userService;
+    private final GameService gameService;
 
-    public Server(UserService userService) {
+    public Server(UserService userService, GameService gameService) {
         this.userService = userService;
+        this.gameService = gameService;
     }
 
     public int run(int desiredPort) {
@@ -25,9 +34,9 @@ public class Server {
         Spark.post("/user", this::register);
         Spark.post("/session", this::login);
         Spark.delete("/session", this::logout);
-//        Spark.get("/game", this::listGames);
-//        Spark.post("/game", this::createGame);
-//        Spark.put("/game", this::joinGame);
+        Spark.get("/game", this::listGames);
+        Spark.post("/game", this::createGame);
+        Spark.put("/game", this::joinGame);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
         Spark.delete("/db", this::deleteAllData);
 
@@ -82,8 +91,66 @@ public class Server {
         return "";
     }
 
+    private Object createGame(Request req, Response res) throws DataAccessException {
+        String authToken = new Gson().fromJson(req.headers("authorization"), String.class);
+        JsonObject body = new Gson().fromJson(req.body(), JsonObject.class);
+        String gameName = body.get("gameName").getAsString();
+
+        var userAuths = userService.listStringAuthTokens();
+
+        if (!userAuths.contains(authToken)) {
+            throw new DataAccessException(401, "unauthorized");
+        } else {
+
+            var gameID = gameService.createGame(authToken, gameName);
+
+            res.status(200);
+            return new Gson().toJson(gameID);
+        }
+    }
+
+    private Object listGames(Request req, Response res) throws DataAccessException {
+        String authToken = new Gson().fromJson(req.headers("authorization"), String.class);
+
+        var userAuths = userService.listStringAuthTokens();
+
+        if (!userAuths.contains(authToken)) {
+            throw new DataAccessException(401, "unauthorized");
+        } else {
+            Collection<ListGameResult> gameList = gameService.listGames();
+
+            res.status(200);
+            return new Gson().toJson(gameList);
+        }
+    }
+
+    private Object joinGame(Request req, Response res) throws DataAccessException {
+        String authToken = new Gson().fromJson(req.headers("authorization"), String.class);
+        var joinGameRequest = new Gson().fromJson(req.body(), JoinGameRequest.class);
+        String username = userService.getUsername(authToken);
+
+        var userAuths = userService.listStringAuthTokens();
+        if (!userAuths.contains(authToken)) {
+            throw new DataAccessException(401, "unauthorized");
+        } else {
+            GameData gameData = gameService.joinGame(joinGameRequest.gameID(), joinGameRequest.playerColor(), authToken, username);
+
+            String gameDataString = gameData.toString();
+//            var obj = Map.of(gameDataString.);
+//            var serializer = new Gson();
+//            var gsonObj = serializer.fromJson(gameDataString, String.class);
+
+            res.status(200);
+//            return new Gson().toJson(gameDataString);
+            return JsonParser.parseString(gameDataString).getAsJsonObject();
+//            return gsonObj;
+        }
+
+    }
+
     private Object deleteAllData(Request req, Response res) throws DataAccessException {
         userService.deleteAllUsers();
+        gameService.deleteAllGames();
         res.status(200);
         return "";
     }

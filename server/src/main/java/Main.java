@@ -4,6 +4,7 @@ import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import model.GameData;
 import server.Server;
+import service.GameService;
 import service.UserService;
 
 public class Main {
@@ -22,7 +23,8 @@ public class Main {
             GameDAO gameDAO = new GameDAO();
 
             var userService = new UserService(userDAO, authDAO);
-            port = new Server(userService).run(port);
+            var gameService = new GameService(gameDAO, authDAO, userDAO);
+            port = new Server(userService, gameService).run(port);
             System.out.printf("Server started on port %d%n", port);
             return;
         } catch (Throwable ex) {

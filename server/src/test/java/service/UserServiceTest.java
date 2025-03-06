@@ -1,12 +1,10 @@
 package service;
 
 import dataaccess.AuthDAO;
-import dataaccess.AuthInterface;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -83,13 +81,18 @@ public class UserServiceTest {
     }
 
     @Test
-    void listUsers() throws DataAccessException {
+    void listUsersSuccess() throws DataAccessException {
         service.register("joe", "joepassword", "joe@email.com");
         service.register( "sally", "sallypassword", "sally@email.com");
         service.register("fred", "fredpassword", "fred@email.com");
 
         var actual = service.listUsers().size();
         assertEquals(3, actual);
+    }
+
+    @Test
+    void listUsersFail() throws DataAccessException {
+
     }
 
     @Test
@@ -101,5 +104,7 @@ public class UserServiceTest {
         assertEquals(3, service.listUsers().size());
         service.deleteAllUsers();
         assertEquals(0, service.listUsers().size());
+
+        assertEquals(0, service.listAuthTokens().size());
     }
 }

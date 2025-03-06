@@ -50,6 +50,17 @@ public class AuthDAO implements AuthInterface {
         return username;
     }
 
+    public String getUsernameFromAuthToken(String authToken) throws DataAccessException {
+        AuthData authData = null;
+        for (Map.Entry<String, AuthData> possToken : tokens.entrySet()) {
+            if (possToken.getKey().equals(authToken)) {
+                authData = possToken.getValue();
+            }
+        }
+
+        return getUserFromAuthToken(authData);
+    }
+
     public Collection<AuthData> getAllAuthTokens() {
         return tokens.values();
     }

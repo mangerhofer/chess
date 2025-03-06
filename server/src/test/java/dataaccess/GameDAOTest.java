@@ -63,9 +63,9 @@ public class GameDAOTest {
         AuthData authToken = auth.createAuthToken(user, user.username(), user.password());
 
         int gameId1 = games.getFirst().gameID();
-        dataAccess.joinGame(gameId1, "WHITE", authToken);
+        dataAccess.joinGame(gameId1, "WHITE", authToken, user.username());
 
-        assertDoesNotThrow(() -> dataAccess.joinGame(gameId1, "BLACK", authToken));
+        assertDoesNotThrow(() -> dataAccess.joinGame(gameId1, "BLACK", authToken, "joe"));
     }
 
     @ParameterizedTest
