@@ -84,10 +84,6 @@ public class GameDAO implements GameInterface {
         return listGames.values();
     }
 
-    public GameData getGame(int gameID) {
-        return games.get(gameID);
-    }
-
     public void deleteGame(GameData game) {
         int gameValue = 0;
 

@@ -13,7 +13,6 @@ public interface GameInterface {
     GameData joinGame(int gameID, String playerColor, AuthData authToken, String username) throws DataAccessException;
     Collection<GameData> listGames() throws DataAccessException;
     Collection<ListGameResult> listGameResults() throws DataAccessException;
-    GameData getGame(int gameID) throws DataAccessException;
     void deleteGame(GameData game) throws DataAccessException;
     void deleteAllGames() throws DataAccessException;
 }
