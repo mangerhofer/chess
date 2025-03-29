@@ -1,7 +1,6 @@
 package service;
 
 import dataaccess.AuthDAO;
-import dataaccess.AuthInterface;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import model.AuthData;
@@ -12,19 +11,19 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserServiceTest {
-    static final UserService service = new UserService(new UserDAO(), new AuthDAO());
+    static final UserService USER_SERVICE = new UserService(new UserDAO(), new AuthDAO());
 
     @BeforeEach
     void clear() throws DataAccessException {
-        service.deleteAllUsers();
+        USER_SERVICE.deleteAllUsers();
     }
 
     @Test
     void registerSuccess() throws DataAccessException {
         var user = new UserData("bobusername", "bobpassword", "bob@email.com");
-        AuthData result = service.register(user.username(), user.password(), user.email());
+        AuthData result = USER_SERVICE.register(user.username(), user.password(), user.email());
 
-        var users = service.listUsers();
+        var users = USER_SERVICE.listUsers();
         assertEquals(1, users.size());
         assertTrue(users.contains(user));
     }
@@ -32,10 +31,10 @@ public class UserServiceTest {
     @Test
     void registerFail() throws DataAccessException {
         var user = new UserData("bobusername", "bobpassword", "bob@email.com");
-        service.register(user.username(), user.password(), user.email());
+        USER_SERVICE.register(user.username(), user.password(), user.email());
 
         assertThrows(DataAccessException.class, () -> {
-            service.register(user.username(), user.password(), user.email());
+            USER_SERVICE.register(user.username(), user.password(), user.email());
             throw new DataAccessException(403, "username already taken");
         });
 
@@ -47,28 +46,28 @@ public class UserServiceTest {
 
     @Test
     void loginSuccess() throws DataAccessException {
-        service.register("bob", "bobpassword", "bob@email.com");
-        var loginResult = service.login("bob", "bobpassword");
+        USER_SERVICE.register("bob", "bobpassword", "bob@email.com");
+        var loginResult = USER_SERVICE.login("bob", "bobpassword");
 
         assertNotNull(loginResult);
     }
 
     @Test
     void loginFail() throws DataAccessException {
-        service.register("bob", "bobpassword", "bob@email.com");
+        USER_SERVICE.register("bob", "bobpassword", "bob@email.com");
 
         assertThrows(DataAccessException.class, () -> {
-            service.login("bob", "pass");
+            USER_SERVICE.login("bob", "pass");
             throw new DataAccessException(401, "unauthorized");
         });
     }
 
     @Test
     void logoutSuccess() throws DataAccessException {
-        AuthData authData = service.register("bob", "bobpassword", "bob@email.com");
-        service.logout(authData.authToken());
+        AuthData authData = USER_SERVICE.register("bob", "bobpassword", "bob@email.com");
+        USER_SERVICE.logout(authData.authToken());
 
-        var tokenList = service.listAuthTokens();
+        var tokenList = USER_SERVICE.listAuthTokens();
 
         assertFalse(tokenList.contains(authData));
     }
@@ -76,86 +75,86 @@ public class UserServiceTest {
     @Test
     void logoutFail() throws DataAccessException {
         assertThrows(DataAccessException.class, () -> {
-            service.logout(" ");
+            USER_SERVICE.logout(" ");
             throw new DataAccessException(401, "unauthorized");
         });
     }
 
     @Test
     void listUsersSuccess() throws DataAccessException {
-        service.register("joe", "joepassword", "joe@email.com");
-        service.register( "sally", "sallypassword", "sally@email.com");
-        service.register("fred", "fredpassword", "fred@email.com");
+        USER_SERVICE.register("joe", "joepassword", "joe@email.com");
+        USER_SERVICE.register( "sally", "sallypassword", "sally@email.com");
+        USER_SERVICE.register("fred", "fredpassword", "fred@email.com");
 
-        var actual = service.listUsers().size();
+        var actual = USER_SERVICE.listUsers().size();
         assertEquals(3, actual);
     }
 
     @Test
     void listUsersFail() throws DataAccessException {
         assertThrows(DataAccessException.class, () -> {
-            service.listUsers();
+            USER_SERVICE.listUsers();
             throw new DataAccessException(401, "unauthorized");
         });
     }
 
     @Test
     void listAuthTokensSuccess() throws DataAccessException {
-        service.register("joe", "joepassword", "joe@email.com");
-        service.register( "sally", "sallypassword", "sally@email.com");
-        service.register("fred", "fredpassword", "fred@email.com");
+        USER_SERVICE.register("joe", "joepassword", "joe@email.com");
+        USER_SERVICE.register( "sally", "sallypassword", "sally@email.com");
+        USER_SERVICE.register("fred", "fredpassword", "fred@email.com");
 
-        var actual = service.listAuthTokens().size();
+        var actual = USER_SERVICE.listAuthTokens().size();
         assertEquals(3, actual);
     }
 
     @Test
     void listAuthTokensFail() throws DataAccessException {
         assertThrows(DataAccessException.class, () -> {
-            service.listAuthTokens();
+            USER_SERVICE.listAuthTokens();
             throw new DataAccessException(401, "unauthorized");
         });
     }
 
     @Test
     void listStringAuthSuccess() throws DataAccessException {
-        service.register("joe", "joepassword", "joe@email.com");
-        service.register( "sally", "sallypassword", "sally@email.com");
-        service.register("fred", "fredpassword", "fred@email.com");
+        USER_SERVICE.register("joe", "joepassword", "joe@email.com");
+        USER_SERVICE.register( "sally", "sallypassword", "sally@email.com");
+        USER_SERVICE.register("fred", "fredpassword", "fred@email.com");
 
-        var actual = service.listStringAuthTokens().size();
+        var actual = USER_SERVICE.listStringAuthTokens().size();
         assertEquals(3, actual);
     }
 
     @Test
     void listStringAuthFail() throws DataAccessException {
         assertThrows(DataAccessException.class, () -> {
-            service.listStringAuthTokens();
+            USER_SERVICE.listStringAuthTokens();
             throw new DataAccessException(401, "unauthorized");
         });
     }
 
     @Test
     void getAuthTokenSuccess() throws DataAccessException {
-        var user = service.register("joe", "joepassword", "joe@email.com");
-        var authToken = service.getAuthToken(user.authToken());
+        var user = USER_SERVICE.register("joe", "joepassword", "joe@email.com");
+        var authToken = USER_SERVICE.getAuthToken(user.authToken());
 
-        var listedAuthTokens = service.listAuthTokens();
+        var listedAuthTokens = USER_SERVICE.listAuthTokens();
         assertTrue(listedAuthTokens.contains(authToken));
     }
 
     @Test
     void getAuthTokenFail() throws DataAccessException {
         assertThrows(DataAccessException.class, () -> {
-            service.getAuthToken(" ");
+            USER_SERVICE.getAuthToken(" ");
             throw new DataAccessException(401, "unauthorized");
         });
     }
 
     @Test
     void getUsernameSuccess() throws DataAccessException {
-        var user = service.register("joe", "joepassword", "joe@email.com");
-        var username = service.getUsername(user.authToken());
+        var user = USER_SERVICE.register("joe", "joepassword", "joe@email.com");
+        var username = USER_SERVICE.getUsername(user.authToken());
 
         assertEquals(username, "joe");
     }
@@ -163,21 +162,21 @@ public class UserServiceTest {
     @Test
     void getUsernameFail() throws DataAccessException {
         assertThrows(DataAccessException.class, () -> {
-            service.getUsername("");
+            USER_SERVICE.getUsername("");
             throw new DataAccessException(401, "unauthorized");
         });
     }
 
     @Test
     void deleteAllUsers() throws DataAccessException {
-        service.register("joe", "joepassword", "joe@email.com");
-        service.register( "sally", "sallypassword", "sally@email.com");
-        service.register("fred", "fredpassword", "fred@email.com");
+        USER_SERVICE.register("joe", "joepassword", "joe@email.com");
+        USER_SERVICE.register( "sally", "sallypassword", "sally@email.com");
+        USER_SERVICE.register("fred", "fredpassword", "fred@email.com");
 
-        assertEquals(3, service.listUsers().size());
-        service.deleteAllUsers();
-        assertEquals(0, service.listUsers().size());
+        assertEquals(3, USER_SERVICE.listUsers().size());
+        USER_SERVICE.deleteAllUsers();
+        assertEquals(0, USER_SERVICE.listUsers().size());
 
-        assertEquals(0, service.listAuthTokens().size());
+        assertEquals(0, USER_SERVICE.listAuthTokens().size());
     }
 }
