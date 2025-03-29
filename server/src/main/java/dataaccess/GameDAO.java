@@ -17,8 +17,8 @@ public class GameDAO implements GameInterface {
         int max = 9999, min = 1000;
         int gameID = rand.nextInt(max - min +1) + min;
 
-        GameData game = new GameData(gameID, "", "", gameName, chessGame);
-        ListGameResult createGameResult = new ListGameResult(gameID, "", "", gameName);
+        GameData game = new GameData(gameID, null, null, gameName, chessGame);
+        ListGameResult createGameResult = new ListGameResult(gameID, null, null, gameName);
         games.put(gameID, game);
         listGames.put(gameID, createGameResult);
 
@@ -52,14 +52,14 @@ public class GameDAO implements GameInterface {
             throw new DataAccessException(400, "bad request");
         } else {
             if (playerColor.equals("BLACK")) {
-                if (game.blackUsername().isEmpty()) {
+                if (game.blackUsername() == null) {
                     game = game.setBlackUsername(username);
                     gameResult = gameResult.setBlackUsername(username);
                 } else {
                     throw new DataAccessException(403, "already taken");
                 }
             } else if (playerColor.equals("WHITE")) {
-                if (game.whiteUsername().isEmpty()) {
+                if (game.whiteUsername() == null) {
                     game = game.setWhiteUsername(username);
                     gameResult = gameResult.setWhiteUsername(username);
                 } else {
@@ -102,5 +102,6 @@ public class GameDAO implements GameInterface {
 
     public void deleteAllGames() {
         games.clear();
+        listGames.clear();
     }
 }

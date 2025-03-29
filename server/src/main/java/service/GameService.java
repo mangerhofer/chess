@@ -1,9 +1,6 @@
 package service;
 
-import dataaccess.DataAccessException;
-import dataaccess.AuthInterface;
-import dataaccess.GameInterface;
-import dataaccess.UserInterface;
+import dataaccess.*;
 import model.AuthData;
 import model.GameData;
 import model.ListGameResult;
@@ -36,6 +33,23 @@ public class GameService {
     public GameData joinGame(int gameID, String playerColor, String authToken, String username) throws DataAccessException {
         UserService userService = new UserService(userInterface, authInterface);
         AuthData authData = userService.getAuthToken(authToken);
+
+        boolean found = false;
+        var findGame = gameInterface.listGames();
+        for (GameData possGames : findGame) {
+            if (possGames == null) {
+                break;
+            }
+            if (gameID == possGames.gameID()) {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            throw new DataAccessException(400, "bad request");
+        }
+
 
         return gameInterface.joinGame(gameID, playerColor, authData, username);
     }

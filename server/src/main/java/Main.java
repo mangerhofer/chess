@@ -18,13 +18,7 @@ public class Main {
                 port = Integer.parseInt(args[0]);
             }
 
-            UserDAO userDAO = new UserDAO();
-            AuthDAO authDAO = new AuthDAO();
-            GameDAO gameDAO = new GameDAO();
-
-            var userService = new UserService(userDAO, authDAO);
-            var gameService = new GameService(gameDAO, authDAO, userDAO);
-            port = new Server(userService, gameService).run(port);
+            port = new Server().run(port);
             System.out.printf("Server started on port %d%n", port);
             return;
         } catch (Throwable ex) {

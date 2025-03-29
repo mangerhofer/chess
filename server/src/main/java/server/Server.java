@@ -1,15 +1,12 @@
 package server;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import dataaccess.AuthInterface;
-import dataaccess.DataAccessException;
-import dataaccess.UserInterface;
+import com.google.gson.*;
+import dataaccess.*;
 import model.*;
 import service.GameService;
 import service.UserService;
 import spark.*;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,13 +14,12 @@ import java.util.List;
 import java.util.Map;
 
 public class Server {
-    private final UserService userService;
-    private final GameService gameService;
+    private UserDAO userDAO = new UserDAO();
+    private AuthDAO authDAO = new AuthDAO();
+    private GameDAO gameDAO = new GameDAO();
 
-    public Server(UserService userService, GameService gameService) {
-        this.userService = userService;
-        this.gameService = gameService;
-    }
+    private UserService userService = new UserService(userDAO, authDAO);
+    private GameService gameService = new GameService(gameDAO, authDAO, userDAO);
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -39,9 +35,6 @@ public class Server {
         Spark.put("/game", this::joinGame);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
         Spark.delete("/db", this::deleteAllData);
-
-        //This line initializes the server and can be removed once you have a functioning endpoint 
-//        Spark.init();
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -119,39 +112,42 @@ public class Server {
         } else {
             Collection<ListGameResult> gameList = gameService.listGames();
 
-            res.status(200);
-            return new Gson().toJson(gameList);
+            if (gameList.isEmpty()) {
+                var games = Map.of("games", new ArrayList<>());
+                res.status(200);
+                return new Gson().toJson(games);
+            } else {
+                var games = Map.of("games", gameList);
+                res.status(200);
+                return new Gson().toJson(games);
+            }
         }
     }
 
-    private Object joinGame(Request req, Response res) throws DataAccessException {
-        String authToken = new Gson().fromJson(req.headers("authorization"), String.class);
+    private Object joinGame(Request req, Response res) throws DataAccessException, IllegalAccessException {
+        String authToken = "";
+        String reqObj = req.headers("authorization");
+        var userAuths = userService.listStringAuthTokens();
+
+        if (reqObj == null || reqObj.isEmpty() || !userAuths.contains(reqObj)) {
+            throw new DataAccessException(401, "unauthorized");
+        } else {
+            authToken = new Gson().fromJson(reqObj, String.class);
+        }
+
         var joinGameRequest = new Gson().fromJson(req.body(), JoinGameRequest.class);
         String username = userService.getUsername(authToken);
 
-        var userAuths = userService.listStringAuthTokens();
-        if (!userAuths.contains(authToken)) {
-            throw new DataAccessException(401, "unauthorized");
-        } else {
-            GameData gameData = gameService.joinGame(joinGameRequest.gameID(), joinGameRequest.playerColor(), authToken, username);
+        GameData gameData = gameService.joinGame(joinGameRequest.gameID(), joinGameRequest.playerColor(), authToken, username);
 
-            String gameDataString = gameData.toString();
-//            var obj = Map.of(gameDataString.);
-//            var serializer = new Gson();
-//            var gsonObj = serializer.fromJson(gameDataString, String.class);
-
-            res.status(200);
-//            return new Gson().toJson(gameDataString);
-            return JsonParser.parseString(gameDataString).getAsJsonObject();
-//            return gsonObj;
-        }
-
+        res.status(200);
+        return new Gson().toJson(gameData);
     }
 
     private Object deleteAllData(Request req, Response res) throws DataAccessException {
         userService.deleteAllUsers();
         gameService.deleteAllGames();
         res.status(200);
-        return "";
+        return "{}";
     }
 }

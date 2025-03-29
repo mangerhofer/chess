@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.AuthDAO;
+import dataaccess.AuthInterface;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import model.AuthData;
@@ -92,7 +93,79 @@ public class UserServiceTest {
 
     @Test
     void listUsersFail() throws DataAccessException {
+        assertThrows(DataAccessException.class, () -> {
+            service.listUsers();
+            throw new DataAccessException(401, "Error: unauthorized");
+        });
+    }
 
+    @Test
+    void listAuthTokensSuccess() throws DataAccessException {
+        service.register("joe", "joepassword", "joe@email.com");
+        service.register( "sally", "sallypassword", "sally@email.com");
+        service.register("fred", "fredpassword", "fred@email.com");
+
+        var actual = service.listAuthTokens().size();
+        assertEquals(3, actual);
+    }
+
+    @Test
+    void listAuthTokensFail() throws DataAccessException {
+        assertThrows(DataAccessException.class, () -> {
+            service.listAuthTokens();
+            throw new DataAccessException(401, "Error: unauthorized");
+        });
+    }
+
+    @Test
+    void listStringAuthSuccess() throws DataAccessException {
+        service.register("joe", "joepassword", "joe@email.com");
+        service.register( "sally", "sallypassword", "sally@email.com");
+        service.register("fred", "fredpassword", "fred@email.com");
+
+        var actual = service.listStringAuthTokens().size();
+        assertEquals(3, actual);
+    }
+
+    @Test
+    void listStringAuthFail() throws DataAccessException {
+        assertThrows(DataAccessException.class, () -> {
+            service.listStringAuthTokens();
+            throw new DataAccessException(401, "Error: unauthorized");
+        });
+    }
+
+    @Test
+    void getAuthTokenSuccess() throws DataAccessException {
+        var user = service.register("joe", "joepassword", "joe@email.com");
+        var authToken = service.getAuthToken(user.authToken());
+
+        var listedAuthTokens = service.listAuthTokens();
+        assertTrue(listedAuthTokens.contains(authToken));
+    }
+
+    @Test
+    void getAuthTokenFail() throws DataAccessException {
+        assertThrows(DataAccessException.class, () -> {
+            service.getAuthToken(" ");
+            throw new DataAccessException(401, "Error: unauthorized");
+        });
+    }
+
+    @Test
+    void getUsernameSuccess() throws DataAccessException {
+        var user = service.register("joe", "joepassword", "joe@email.com");
+        var username = service.getUsername(user.authToken());
+
+        assertEquals(username, "joe");
+    }
+
+    @Test
+    void getUsernameFail() throws DataAccessException {
+        assertThrows(DataAccessException.class, () -> {
+            service.getUsername("");
+            throw new DataAccessException(401, "Error: unauthorized");
+        });
     }
 
     @Test

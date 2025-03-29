@@ -24,13 +24,17 @@ public class AuthDAO implements AuthInterface {
 
     public AuthData getAuthToken(String username) throws DataAccessException {
         AuthData tokenValue = null;
+        boolean found = false;
 
         for (Map.Entry<AuthData, String> possToken : authTokenMap.entrySet()) {
             if (possToken.getValue().equals(username)) {
                 tokenValue = possToken.getKey();
-            } else {
-                throw new DataAccessException(401, "Error: unauthorized");
+                found = true;
             }
+        }
+
+        if (!found) {
+            throw new DataAccessException(401, "Error: unauthorized");
         }
 
         return tokenValue;
@@ -38,14 +42,19 @@ public class AuthDAO implements AuthInterface {
 
     public String getUserFromAuthToken(AuthData authToken) throws DataAccessException {
         String username = null;
+        boolean found = false;
 
         for (Map.Entry<AuthData, String> possToken : authTokenMap.entrySet()) {
             if (possToken.getKey().equals(authToken)) {
                 username = possToken.getValue();
-            } else {
-                throw new DataAccessException(401, "Error: unauthorized");
+                found = true;
             }
         }
+
+        if (!found) {
+            throw new DataAccessException(401, "Error: unauthorized");
+        }
+
 
         return username;
     }
