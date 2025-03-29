@@ -10,7 +10,6 @@ import spark.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 public class Server {
@@ -46,9 +45,9 @@ public class Server {
     }
 
     private void exceptionHandler(DataAccessException ex, Request req, Response res) {
-        var body = new Gson().toJson(Map.of("message", String.format("Error: %s", ex.getMessage()), "status", ex.StatusCode()));
+        var body = new Gson().toJson(Map.of("message", String.format("Error: %s", ex.getMessage()), "status", ex.getStatusCode()));
         res.type("application/json");
-        res.status(ex.StatusCode());
+        res.status(ex.getStatusCode());
         res.body(body);
     }
 

@@ -4,10 +4,10 @@ import java.util.Collection;
 import java.util.ArrayList;
 
 public class PawnMovesCalculator {
-    private static final Collection<ChessMove> pawnMoves = new ArrayList<>();
+    private static final Collection<ChessMove> PawnMoves = new ArrayList<>();
 
     public static Collection<ChessMove> validPawnMoves(ChessBoard board, ChessPosition myPos) {
-        pawnMoves.clear();
+        PawnMoves.clear();
         ChessPiece piece = board.getPiece(myPos);
         int x = myPos.getRow();
         int y = myPos.getColumn();
@@ -23,18 +23,18 @@ public class PawnMovesCalculator {
                         if (move[1] == 0) {
                             if (board.getPiece(newPos) == null) {
                                 ChessMove newMove = new ChessMove(myPos, newPos, null);
-                                pawnMoves.add(newMove);
+                                PawnMoves.add(newMove);
 
                                 newPos = new ChessPosition(x + 2, y);
                                 if (board.getPiece(newPos) == null) {
                                     newMove = new ChessMove(myPos, newPos, null);
-                                    pawnMoves.add(newMove);
+                                    PawnMoves.add(newMove);
                                 }
                             }
                         } else {
                             if (board.getPiece(newPos) != null && board.getPiece(newPos).getTeamColor() != piece.getTeamColor()) {
                                 ChessMove newMove = new ChessMove(myPos, newPos, null);
-                                pawnMoves.add(newMove);
+                                PawnMoves.add(newMove);
                             }
                         }
                     }
@@ -74,18 +74,18 @@ public class PawnMovesCalculator {
                         if (move[1] == 0) {
                             if (board.getPiece(newPos) == null) {
                                 ChessMove newMove = new ChessMove(myPos, newPos, null);
-                                pawnMoves.add(newMove);
+                                PawnMoves.add(newMove);
 
                                 newPos = new ChessPosition(x - 2, y);
                                 if (board.getPiece(newPos) == null) {
                                     newMove = new ChessMove(myPos, newPos, null);
-                                    pawnMoves.add(newMove);
+                                    PawnMoves.add(newMove);
                                 }
                             }
                         } else {
                             if (board.getPiece(newPos) != null && board.getPiece(newPos).getTeamColor() != piece.getTeamColor()) {
                                 ChessMove newMove = new ChessMove(myPos, newPos, null);
-                                pawnMoves.add(newMove);
+                                PawnMoves.add(newMove);
                             }
                         }
                     }
@@ -116,22 +116,22 @@ public class PawnMovesCalculator {
             }
         }
 
-        return pawnMoves;
+        return PawnMoves;
     }
 
     public static void getPawnMoves(ChessBoard board, ChessPosition myPos, ChessPosition pos1, ChessPosition pos2, ChessPosition pos3) {
         ChessPiece piece = board.getPiece(myPos);
         if (board.getPiece(pos1) == null) {
             ChessMove move = new ChessMove(myPos, pos1, null);
-            pawnMoves.add(move);
+            PawnMoves.add(move);
         }
         if (board.getPiece(pos2) != null && board.getPiece(pos2).getTeamColor() != piece.getTeamColor()) {
             ChessMove move = new ChessMove(myPos, pos2, null);
-            pawnMoves.add(move);
+            PawnMoves.add(move);
         }
         if (board.getPiece(pos3) != null && board.getPiece(pos3).getTeamColor() != piece.getTeamColor()) {
             ChessMove move = new ChessMove(myPos, pos3, null);
-            pawnMoves.add(move);
+            PawnMoves.add(move);
         }
     }
 
@@ -150,12 +150,12 @@ public class PawnMovesCalculator {
 
     public static void possiblePawnMoves(ChessPosition myPos, ChessPosition newPos) {
         ChessMove move = new ChessMove(myPos, newPos, ChessPiece.PieceType.QUEEN);
-        pawnMoves.add(move);
+        PawnMoves.add(move);
         move = new ChessMove(myPos, newPos, ChessPiece.PieceType.KNIGHT);
-        pawnMoves.add(move);
+        PawnMoves.add(move);
         move = new ChessMove(myPos, newPos, ChessPiece.PieceType.BISHOP);
-        pawnMoves.add(move);
+        PawnMoves.add(move);
         move = new ChessMove(myPos, newPos, ChessPiece.PieceType.ROOK);
-        pawnMoves.add(move);
+        PawnMoves.add(move);
     }
 }
