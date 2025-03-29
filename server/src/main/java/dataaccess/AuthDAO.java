@@ -34,7 +34,7 @@ public class AuthDAO implements AuthInterface {
         }
 
         if (!found) {
-            throw new DataAccessException(401, "Error: unauthorized");
+            throw new DataAccessException(401, "unauthorized");
         }
 
         return tokenValue;
@@ -52,7 +52,7 @@ public class AuthDAO implements AuthInterface {
         }
 
         if (!found) {
-            throw new DataAccessException(401, "Error: unauthorized");
+            throw new DataAccessException(401, "unauthorized");
         }
 
 

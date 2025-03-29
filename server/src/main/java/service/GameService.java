@@ -5,7 +5,6 @@ import model.AuthData;
 import model.GameData;
 import model.ListGameResult;
 
-import javax.xml.crypto.Data;
 import java.util.Collection;
 
 public class GameService {
@@ -30,9 +29,8 @@ public class GameService {
         return gameInterface.listGameResults();
     }
 
-    public GameData joinGame(int gameID, String playerColor, String authToken, String username) throws DataAccessException {
+    public GameData joinGame(int gameID, String playerColor, AuthData authData, String username) throws DataAccessException {
         UserService userService = new UserService(userInterface, authInterface);
-        AuthData authData = userService.getAuthToken(authToken);
 
         boolean found = false;
         var findGame = gameInterface.listGames();

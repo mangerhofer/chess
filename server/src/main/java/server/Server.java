@@ -137,8 +137,9 @@ public class Server {
 
         var joinGameRequest = new Gson().fromJson(req.body(), JoinGameRequest.class);
         String username = userService.getUsername(authToken);
+        AuthData authData = userService.getAuthToken(authToken);
 
-        GameData gameData = gameService.joinGame(joinGameRequest.gameID(), joinGameRequest.playerColor(), authToken, username);
+        GameData gameData = gameService.joinGame(joinGameRequest.gameID(), joinGameRequest.playerColor(), authData, username);
 
         res.status(200);
         return new Gson().toJson(gameData);

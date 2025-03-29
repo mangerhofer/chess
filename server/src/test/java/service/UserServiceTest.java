@@ -36,12 +36,12 @@ public class UserServiceTest {
 
         assertThrows(DataAccessException.class, () -> {
             service.register(user.username(), user.password(), user.email());
-            throw new DataAccessException(403, "Error: username already taken");
+            throw new DataAccessException(403, "username already taken");
         });
 
         assertThrows(DataAccessException.class, () -> {
             new UserData("bobusername", "", "bob@email.com");
-            throw new DataAccessException(400, "Error: bad request, fields empty");
+            throw new DataAccessException(400, "bad request, fields empty");
         });
     }
 
@@ -59,7 +59,7 @@ public class UserServiceTest {
 
         assertThrows(DataAccessException.class, () -> {
             service.login("bob", "pass");
-            throw new DataAccessException(401, "Error: unauthorized");
+            throw new DataAccessException(401, "unauthorized");
         });
     }
 
@@ -77,7 +77,7 @@ public class UserServiceTest {
     void logoutFail() throws DataAccessException {
         assertThrows(DataAccessException.class, () -> {
             service.logout(" ");
-            throw new DataAccessException(401, "Error: unauthorized");
+            throw new DataAccessException(401, "unauthorized");
         });
     }
 
@@ -95,7 +95,7 @@ public class UserServiceTest {
     void listUsersFail() throws DataAccessException {
         assertThrows(DataAccessException.class, () -> {
             service.listUsers();
-            throw new DataAccessException(401, "Error: unauthorized");
+            throw new DataAccessException(401, "unauthorized");
         });
     }
 
@@ -113,7 +113,7 @@ public class UserServiceTest {
     void listAuthTokensFail() throws DataAccessException {
         assertThrows(DataAccessException.class, () -> {
             service.listAuthTokens();
-            throw new DataAccessException(401, "Error: unauthorized");
+            throw new DataAccessException(401, "unauthorized");
         });
     }
 
@@ -131,7 +131,7 @@ public class UserServiceTest {
     void listStringAuthFail() throws DataAccessException {
         assertThrows(DataAccessException.class, () -> {
             service.listStringAuthTokens();
-            throw new DataAccessException(401, "Error: unauthorized");
+            throw new DataAccessException(401, "unauthorized");
         });
     }
 
@@ -148,7 +148,7 @@ public class UserServiceTest {
     void getAuthTokenFail() throws DataAccessException {
         assertThrows(DataAccessException.class, () -> {
             service.getAuthToken(" ");
-            throw new DataAccessException(401, "Error: unauthorized");
+            throw new DataAccessException(401, "unauthorized");
         });
     }
 
@@ -164,7 +164,7 @@ public class UserServiceTest {
     void getUsernameFail() throws DataAccessException {
         assertThrows(DataAccessException.class, () -> {
             service.getUsername("");
-            throw new DataAccessException(401, "Error: unauthorized");
+            throw new DataAccessException(401, "unauthorized");
         });
     }
 
