@@ -17,12 +17,16 @@ public class ChessBoard {
         
     }
 
-    public ChessBoard(ChessBoard board) {
+    private void chessBoardArray(ChessBoard board) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 this.board[i][j] = board.board[i][j];
             }
         }
+    }
+
+    public ChessBoard(ChessBoard board) {
+        chessBoardArray(board);
     }
 
     public ChessPiece[][] getBoard() {
@@ -87,11 +91,7 @@ public class ChessBoard {
     }
 
     public void copyBoard(ChessBoard board) {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                this.board[i][j] = board.board[i][j];
-            }
-        }
+        chessBoardArray(board);
     }
 
     @Override

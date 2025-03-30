@@ -21,16 +21,16 @@ public class MovesCalculator {
         return PIECEMOVES;
     }
 
-    public static Collection<ChessMove> calculateBRMoves(ChessBoard board, ChessPosition myPos, int start, int stop, int newX, int newY, int x, int y) {
+    public static Collection<ChessMove> calculateBRMoves(ChessBoard board, ChessPosition myPos, int strt, int stp, int nX, int nY, int x, int y) {
         PIECEMOVES.clear();
         int step = 1;
 
-        if (start > stop) {
+        if (strt > stp) {
             step = -1;
         }
 
-        for (int i = start; i != stop; i += step) {
-            ChessPosition newPos = new ChessPosition(x + i * newX, y + i * newY);
+        for (int i = strt; i != stp; i += step) {
+            ChessPosition newPos = new ChessPosition(x + i * nX, y + i * nY);
             if (newPos.getRow() >= 1 && newPos.getRow() <= 8 && newPos.getColumn() >= 1 && newPos.getColumn() <= 8) {
                 if (board.getPiece(newPos) == null) {
                     getPieceMoves(board, myPos, newPos);

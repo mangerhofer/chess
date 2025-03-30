@@ -40,9 +40,14 @@ public class ChessPosition {
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
                 ChessPosition pos = new ChessPosition(i, j);
-                if (board.getPiece(pos) != null && board.getPiece(pos).getPieceType() == ChessPiece.PieceType.KING && board.getPiece(pos).getTeamColor() == teamColor) {
-                    kingPos = pos;
-                    break;
+                ChessPiece piecePos = board.getPiece(pos);
+                if (piecePos != null) {
+                    ChessPiece.PieceType pieceType = piecePos.getPieceType();
+                    ChessGame.TeamColor pieceColor = piecePos.getTeamColor();
+                    if (pieceType == ChessPiece.PieceType.KING && pieceColor == teamColor) {
+                        kingPos = pos;
+                        break;
+                    }
                 }
             }
         }
@@ -60,8 +65,12 @@ public class ChessPosition {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ChessPosition that = (ChessPosition) o;
         return row == that.row && col == that.col;
     }
