@@ -4,44 +4,44 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class AllValidMovesCalculator {
-    private static final Collection<ChessMove> allMoves = new ArrayList<>();
-    private static final Collection<ChessMove> allValidMovesArray = new ArrayList<>();
-    private static final Collection<ChessMove> allValidMovesArray2 = new ArrayList<>();
-    private static final Collection<ChessMove> validWhiteMoves = new ArrayList<>();
-    private static final Collection<ChessMove> validBlackMoves = new ArrayList<>();
-    private static final Collection<ChessMove> validMoves = new ArrayList<>();
+    private static final Collection<ChessMove> ALLMOVES = new ArrayList<>();
+    private static final Collection<ChessMove> ALLVALIDMOVESARRAY = new ArrayList<>();
+    private static final Collection<ChessMove> ALLVALIDMOVESARRAY2 = new ArrayList<>();
+    private static final Collection<ChessMove> VALIDWHITEMOVES = new ArrayList<>();
+    private static final Collection<ChessMove> VALIDBLACKMOVES = new ArrayList<>();
+    private static final Collection<ChessMove> VALIDMOVES = new ArrayList<>();
 
     public AllValidMovesCalculator() {}
 
     //getting all Piece Moves
     public static Collection<ChessMove> pieceMoves(ChessPosition startPosition, ChessPiece piece, ChessBoard board) {
-        allMoves.clear();
+        ALLMOVES.clear();
 
         if (piece.getPieceType() == ChessPiece.PieceType.KING) {
-            allMoves.addAll(KingMovesCalculator.validKingMoves(board, startPosition));
+            ALLMOVES.addAll(KingMovesCalculator.validKingMoves(board, startPosition));
         }
         if (piece.getPieceType() == ChessPiece.PieceType.QUEEN) {
-            allMoves.addAll(QueenMovesCalculator.validQueenMoves(board, startPosition));
+            ALLMOVES.addAll(QueenMovesCalculator.validQueenMoves(board, startPosition));
         }
         if (piece.getPieceType() == ChessPiece.PieceType.BISHOP) {
-            allMoves.addAll(BishopMovesCalculator.validBishopMoves(board, startPosition));
+            ALLMOVES.addAll(BishopMovesCalculator.validBishopMoves(board, startPosition));
         }
         if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
-            allMoves.addAll(KnightMovesCalculator.validKnightMoves(board, startPosition));
+            ALLMOVES.addAll(KnightMovesCalculator.validKnightMoves(board, startPosition));
         }
         if (piece.getPieceType() == ChessPiece.PieceType.ROOK) {
-            allMoves.addAll(RookMovesCalculator.validRookMoves(board, startPosition));
+            ALLMOVES.addAll(RookMovesCalculator.validRookMoves(board, startPosition));
         }
         if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
-            allMoves.addAll(PawnMovesCalculator.validPawnMoves(board, startPosition));
+            ALLMOVES.addAll(PawnMovesCalculator.validPawnMoves(board, startPosition));
         }
 
-        return allMoves;
+        return ALLMOVES;
     }
 
     //checking for valid moves
     public static Collection<ChessMove> allValidMoves(ChessBoard board) {
-        allValidMovesArray.clear();
+        ALLVALIDMOVESARRAY.clear();
 
         if (board != null) {
             for (int i = 1; i <= 8; i++) {
@@ -55,11 +55,11 @@ public class AllValidMovesCalculator {
             }
         }
 
-        return allValidMovesArray;
+        return ALLVALIDMOVESARRAY;
     }
 
     public static Collection<ChessMove> allValidMoves2(ChessBoard board) {
-        allValidMovesArray2.clear();
+        ALLVALIDMOVESARRAY2.clear();
 
         if (board != null) {
             for (int i = 1; i <= 8; i++) {
@@ -67,21 +67,21 @@ public class AllValidMovesCalculator {
                     ChessPosition newPos = new ChessPosition(i, j);
                     ChessPiece piece = board.getPiece(newPos);
                     if (piece != null) {
-                        allValidMovesArray2.addAll(pieceMoves(newPos, piece, board));
+                        ALLVALIDMOVESARRAY2.addAll(pieceMoves(newPos, piece, board));
                     }
                 }
             }
         }
 
-        return allValidMovesArray2;
+        return ALLVALIDMOVESARRAY2;
     }
 
     public static void colorMovesCheck(ChessBoard board, ChessPiece piece, ChessPosition newPos) {
         ChessGame.TeamColor teamColor = board.getPiece(newPos).getTeamColor();
         if (teamColor == ChessGame.TeamColor.BLACK) {
-            allValidMovesArray.addAll(pieceMoves(newPos, piece, board));
+            ALLVALIDMOVESARRAY.addAll(pieceMoves(newPos, piece, board));
         } else if (teamColor == ChessGame.TeamColor.WHITE) {
-            allValidMovesArray.addAll(pieceMoves(newPos, piece, board));
+            ALLVALIDMOVESARRAY.addAll(pieceMoves(newPos, piece, board));
         }
     }
 
@@ -105,32 +105,34 @@ public class AllValidMovesCalculator {
         return inCheck;
     }
 
-    public static void tryMove(ChessMove move, ChessPosition kingPos, ChessPosition startPosition, ChessPosition endPosition, ChessPiece piece, ChessBoard board) {
+    public static void tryMove(ChessMove move, ChessPosition kingPos, ChessPiece piece, ChessBoard board) {
+        ChessPosition startPosition = move.getStartPosition();
+        ChessPosition endPosition = move.getEndPosition();
         ChessBoard copy = new ChessBoard(board);
 
         board.addPiece(endPosition, piece);
         board.addPiece(startPosition, null);
 
         if (piece.getPieceType() == ChessPiece.PieceType.KING) {
-            if (AllValidMovesCalculator.teamInCheck(endPosition, allValidMovesArray)) {
+            if (AllValidMovesCalculator.teamInCheck(endPosition, ALLVALIDMOVESARRAY)) {
                 board.copyBoard(copy);
             } else {
                 board.copyBoard(copy);
                 if(piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                    validWhiteMoves.add(move);
+                    VALIDWHITEMOVES.add(move);
                 } else {
-                    validBlackMoves.add(move);
+                    VALIDBLACKMOVES.add(move);
                 }
             }
         } else {
-            if (AllValidMovesCalculator.teamInCheck(kingPos, allValidMovesArray)) {
+            if (AllValidMovesCalculator.teamInCheck(kingPos, ALLVALIDMOVESARRAY)) {
                 board.copyBoard(copy);
             } else {
                 board.copyBoard(copy);
                 if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                    validWhiteMoves.add(move);
+                    VALIDWHITEMOVES.add(move);
                 } else {
-                    validBlackMoves.add(move);
+                    VALIDBLACKMOVES.add(move);
                 }
             }
         }
@@ -138,18 +140,34 @@ public class AllValidMovesCalculator {
 
     public static void tryMoveHelper(ChessMove move, ChessPosition king, ChessPiece piece, ChessBoard board) {
         ChessBoard copy = new ChessBoard(board);
-        ChessPosition startPosition = move.getStartPosition();
         ChessPosition endPosition = move.getEndPosition();
-        validMoves.clear();
+        VALIDMOVES.clear();
 
-        tryMove(move, king, startPosition, endPosition, piece, board);
-        if (teamInCheck(endPosition, allValidMovesArray)) {
+        tryMove(move, king, piece, board);
+        if (teamInCheck(endPosition, ALLVALIDMOVESARRAY)) {
             board.copyBoard(copy);
         } else {
             board.copyBoard(copy);
-            if (!validMoves.contains(move)) {
-                validMoves.add(move);
+            if (!VALIDMOVES.contains(move)) {
+                VALIDMOVES.add(move);
             }
         }
+    }
+
+    public static Collection<ChessMove> moveHelper2 (ChessPiece piece, ChessMove move, ChessPosition king, ChessBoard board) {
+        VALIDMOVES.clear();
+        if (piece.getPieceType() == ChessPiece.PieceType.KING) {
+            tryMoveHelper(move, king, piece, board);
+        } else {
+            if (teamInCheck(king, ALLVALIDMOVESARRAY)) {
+                tryMove(move, king, piece, board);
+            } else {
+                tryMove(move, king, piece, board);
+                if (!VALIDMOVES.contains(move)) {
+                    VALIDMOVES.add(move);
+                }
+            }
+        }
+        return VALIDMOVES;
     }
 }

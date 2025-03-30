@@ -255,19 +255,19 @@ public class ChessGame {
         return newValidMoves;
     }
 
-    public Collection<ChessMove> checkPromotion(ChessPosition startPosition, ChessPosition endPosition, ChessPiece.PieceType promoPiece, TeamColor teamColor) {
+    public Collection<ChessMove> checkPromotion(ChessPosition startPos, ChessPosition endPos, ChessPiece.PieceType promoPiece, TeamColor teamColor) {
         Collection<ChessMove> newValidMoves = new ArrayList<>();
         ChessBoard copy = new ChessBoard(board);
 
         for (ChessMove checkMove : checkValidMovesArray) {
             ChessBoard board = getBoard();
-            ChessPiece piece = board.getPiece(startPosition);
+            ChessPiece piece = board.getPiece(startPos);
 
             if (promoPiece != null) {
                 ChessPiece prPiece = new ChessPiece(teamColor, promoPiece);
-                board.addPiece(endPosition, prPiece);
+                board.addPiece(endPos, prPiece);
             } else {
-                board.addPiece(endPosition, piece);
+                board.addPiece(endPos, piece);
             }
             if (isInCheck(piece.getTeamColor())) {
                 board.copyBoard(copy);
@@ -410,37 +410,12 @@ public class ChessGame {
 
         for (ChessMove move : possMoves) {
             ChessPosition startPosition = move.getStartPosition();
-            ChessPosition endPosition = move.getEndPosition();
             ChessPiece piece = board.getPiece(startPosition);
 
             if (piece.getTeamColor() == TeamColor.WHITE) {
-                if (piece.getPieceType() == ChessPiece.PieceType.KING) {
-                    AllValidMovesCalculator.tryMoveHelper(move, whiteKing, piece, getBoard());
-                } else {
-                    if (AllValidMovesCalculator.teamInCheck(whiteKing, allValidMovesArray)) {
-                        AllValidMovesCalculator.tryMove(move, whiteKing, startPosition, endPosition, piece, getBoard());
-                    } else {
-                        AllValidMovesCalculator.tryMove(move, whiteKing, startPosition, endPosition, piece, getBoard());
-                        if (piece.getTeamColor() == TeamColor.WHITE) {
-                            if (!validWhiteMoves.contains(move)) {
-                                validWhiteMoves.add(move);
-                            }
-                        }
-                    }
-                }
+                validWhiteMoves.addAll(AllValidMovesCalculator.moveHelper2(piece, move, whiteKing, getBoard()));
             } else if (piece.getTeamColor() == TeamColor.BLACK) {
-                if (piece.getPieceType() == ChessPiece.PieceType.KING) {
-                    AllValidMovesCalculator.tryMoveHelper(move, blackKing, piece, getBoard());
-                } else {
-                    if (AllValidMovesCalculator.teamInCheck(blackKing, allValidMovesArray)) {
-                        AllValidMovesCalculator.tryMove(move, blackKing, startPosition, endPosition, piece, getBoard());
-                    } else {
-                        AllValidMovesCalculator.tryMove(move, blackKing, startPosition, endPosition, piece, getBoard());
-                        if (!validBlackMoves.contains(move)) {
-                            validBlackMoves.add(move);
-                        }
-                    }
-                }
+                validBlackMoves.addAll(AllValidMovesCalculator.moveHelper2(piece, move, blackKing, getBoard()));
             }
         }
     }
