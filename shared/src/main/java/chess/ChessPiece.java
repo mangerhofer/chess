@@ -57,7 +57,9 @@ public class ChessPiece {
         Collection<ChessMove> moves = new ArrayList<>();
         ChessPiece piece = board.getPiece(myPosition);
 
-        if (piece.getPieceType() == PieceType.BISHOP) {
+        if (piece.getPieceType() == PieceType.KING) {
+            moves = KingMovesCalculator.validKingMoves(board, myPosition);
+        } else if (piece.getPieceType() == PieceType.BISHOP) {
             moves = BishopMovesCalculator.validBishopMoves(board, myPosition);
         }
 
