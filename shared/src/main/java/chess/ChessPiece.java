@@ -67,6 +67,8 @@ public class ChessPiece {
             moves = RookMovesCalculator.validRookMoves(board, myPosition);
         } else if (piece.getPieceType() == PieceType.QUEEN) {
             moves = QueenMovesCalculator.validQueenMoves(board, myPosition);
+        } else if (piece.getPieceType() == PieceType.PAWN) {
+            moves = PawnMovesCalculator.validPawnMoves(board, myPosition);
         }
 
         return moves;
