@@ -17,73 +17,15 @@ public class BishopMovesCalculator {
         int topLeft = Math.min(7-x, y);
         int topRight = Math.max(7-x, 7-y);
 
-        for (int i = 1; i < bottomLeft; i++) {
-            ChessPosition newPos = new ChessPosition(x-i, y-i);
-            if (newPos.getRow() >= 1 && newPos.getColumn() >= 1) {
-                if (board.getPiece(newPos) == null) {
-                    getBishopMoves(board, myPos, newPos);
-                } else if (board.getPiece(newPos) != null) {
-                    getBishopMoves(board, myPos, newPos);
-                    break;
-                } else {
-                    break;
-                }
-            }
-        }
-
-        for (int i = 1; i < bottomRight+1; i++) {
-            ChessPosition newPos = new ChessPosition(x-i, y+i);
-            if (newPos.getRow() >= 1 && newPos.getColumn() <= 8) {
-                if (board.getPiece(newPos) == null) {
-                    getBishopMoves(board, myPos, newPos);
-                } else if (board.getPiece(newPos) != null) {
-                    getBishopMoves(board, myPos, newPos);
-                    break;
-                } else {
-                    break;
-                }
-            }
-        }
-
-        for (int i = 1; i < topLeft+2; i++) {
-            ChessPosition newPos = new ChessPosition(x+i, y-i);
-            if (newPos.getRow() <= 8 && newPos.getColumn() >= 1) {
-                if (board.getPiece(newPos) == null) {
-                    getBishopMoves(board, myPos, newPos);
-                } else if (board.getPiece(newPos) != null) {
-                    getBishopMoves(board, myPos, newPos);
-                    break;
-                } else {
-                    break;
-                }
-            }
-        }
-
-        for (int i = 1; i < topRight+2; i++) {
-            ChessPosition newPos = new ChessPosition(x+i, y+i);
-            if (newPos.getRow() <= 8 && newPos.getColumn() <= 8) {
-                if (board.getPiece(newPos) == null) {
-                    getBishopMoves(board, myPos, newPos);
-                } else if (board.getPiece(newPos) != null) {
-                    getBishopMoves(board, myPos, newPos);
-                    break;
-                } else {
-                    break;
-                }
-            }
-        }
+        //bottomLeft
+        bishopMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, 1, bottomLeft, -1, -1, x, y));
+        //bottomRight
+        bishopMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, 1, bottomRight+1, -1, 1, x, y));
+        //topLeft
+        bishopMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, 1, topLeft+2, 1, -1, x, y));
+        //topRight
+        bishopMoves.addAll(MovesCalculator.calculateBRMoves(board, myPos, 1, topRight+2, 1, 1, x, y));
 
         return bishopMoves;
     }
-
-    public static void getBishopMoves(ChessBoard board, ChessPosition myPos, ChessPosition newPos) {
-        ChessPiece piece = board.getPiece(myPos);
-
-        if (board.getPiece(newPos) == null) {
-            bishopMoves.add(new ChessMove(myPos, newPos, null));
-        } else if (board.getPiece(newPos) != null && board.getPiece(newPos).getTeamColor() != piece.getTeamColor()) {
-            bishopMoves.add(new ChessMove(myPos, newPos, null));
-        }
-    }
-
 }

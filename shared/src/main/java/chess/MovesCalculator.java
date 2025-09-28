@@ -21,6 +21,29 @@ public class MovesCalculator {
         return pieceMoves;
     }
 
+    public static Collection<ChessMove> calculateBRMoves(ChessBoard board, ChessPosition myPos, int strt, int stp, int nX, int nY, int x, int y) {
+        pieceMoves.clear();
+        int step = 1;
+
+        if (strt > stp) {
+            step = -1;
+        }
+
+        for (int i = strt; i != stp; i += step) {
+            ChessPosition newPos = new ChessPosition(x+i*nX, y+i*nY);
+            if (newPos.getRow() >= 1 && newPos.getRow() <= 8 && newPos.getColumn() >= 1 && newPos.getColumn() <= 8) {
+                if (board.getPiece(newPos) == null) {
+                    getPieceMoves(board, myPos, newPos);
+                } else if (board.getPiece(newPos) != null) {
+                    getPieceMoves(board, myPos, newPos);
+                    break;
+                }
+            }
+        }
+
+        return pieceMoves;
+    }
+
     public static void getPieceMoves(ChessBoard board, ChessPosition myPos, ChessPosition newPos) {
         ChessPiece piece = board.getPiece(myPos);
 
