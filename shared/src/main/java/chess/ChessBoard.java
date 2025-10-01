@@ -17,6 +17,22 @@ public class ChessBoard {
         
     }
 
+    private void chessBoardArray(ChessBoard board) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                this.board[i][j] = board.board[i][j];
+            }
+        }
+    }
+
+    public ChessBoard(ChessBoard board) {
+        chessBoardArray(board);
+    }
+
+    public ChessPiece[][] getBoard() {
+        return board;
+    }
+
     /**
      * Adds a chess piece to the chessboard
      *
@@ -72,6 +88,10 @@ public class ChessBoard {
                 board[row][col] = null;
             }
         }
+    }
+
+    public void copyBoard(ChessBoard board) {
+        chessBoardArray(board);
     }
 
     @Override
