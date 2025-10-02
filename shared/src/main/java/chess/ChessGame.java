@@ -284,15 +284,80 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        allValidMovesArray.clear();
+        allValidMovesArray.addAll(AllValidMovesCalculator.allValidMoves(getBoard()));
+
+        return checkCheckmate(allValidMovesArray, teamColor);// || checkCheckmate(allValidMovesArray, teamColor);
     }
 
     public Collection<ChessMove> checkTeamCheckmate(ChessMove move, ChessPosition kingPos) {
-        throw new RuntimeException("Not Implemented");
+        Collection<ChessMove> pieceMoves = new ArrayList<>();
+        ChessBoard copy = new ChessBoard(board);
+        ChessPosition startPos = move.getStartPosition();
+        ChessPosition endPos = move.getEndPosition();
+        ChessPiece piece = board.getPiece(startPos);
+        TeamColor teamColor = piece.getTeamColor();
+        ChessPiece kingPiece = board.getPiece(kingPos);
+        TeamColor kingColor = kingPiece.getTeamColor();
+        allValidMovesArray2.clear();
+
+        board.addPiece(endPos, piece);
+        board.addPiece(startPos, null);
+
+        allValidMovesArray2.addAll(AllValidMovesCalculator.allValidMoves2(board));
+
+        if (teamColor != kingColor) {
+            if (AllValidMovesCalculator.teamInCheck(kingPos, allValidMovesArray2)) {
+                board.copyBoard(copy);
+            }
+        } else {
+            if (AllValidMovesCalculator.teamInCheck(kingPos, allValidMovesArray2)) {
+                board.copyBoard(copy);
+            } else {
+                board.copyBoard(copy);
+                pieceMoves.add(move);
+            }
+        }
+
+        return pieceMoves;
     }
 
     public boolean checkCheckmate(Collection<ChessMove> validMovesArray, TeamColor teamColor) {
-        throw new RuntimeException("Not Implemented");
+        boolean inCheckmate = false;
+        ChessPosition findKing = new ChessPosition(0, 0);
+        ChessPosition kingWhitePos = findKing.findBWKing(board, TeamColor.WHITE);
+        ChessPosition kingBlackPos = findKing.findBWKing(board, TeamColor.BLACK);
+
+        for (ChessMove move : validMovesArray) {
+            ChessPosition startPos = move.getStartPosition();
+            ChessPiece piece = getBoard().getPiece(startPos);
+            if (piece != null) {
+                if (piece.getTeamColor() == TeamColor.WHITE) {
+                    if (AllValidMovesCalculator.teamInCheck(kingWhitePos, allValidMovesArray)) {
+                        whiteInCheck = true;
+                        checkmateWhiteMoves.addAll(checkTeamCheckmate(move, kingWhitePos));
+                    } else {
+                        checkmateWhiteMoves.add(move);
+                    }
+                }
+                if (piece.getTeamColor() == TeamColor.BLACK) {
+                    if (AllValidMovesCalculator.teamInCheck(kingBlackPos, allValidMovesArray)) {
+                        blackInCheck = true;
+                        checkmateBlackMoves.addAll(checkTeamCheckmate(move, kingBlackPos));
+                    } else {
+                        checkmateBlackMoves.add(move);
+                    }
+                }
+            }
+        }
+
+        if (teamColor == TeamColor.WHITE && checkmateWhiteMoves.isEmpty() && whiteInCheck) {
+            inCheckmate = true;
+        } else if (teamColor == TeamColor.BLACK && checkmateBlackMoves.isEmpty() && blackInCheck) {
+            inCheckmate = true;
+        }
+
+        return inCheckmate;
     }
 
     /**
