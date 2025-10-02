@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -193,15 +194,87 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        boolean inCheck = false;
+        allValidMovesArray.clear();
+        allValidMovesArray.addAll(AllValidMovesCalculator.allValidMoves(getBoard()));
+        ChessPosition findKing = new ChessPosition(0, 0);
+
+        ChessBoard board = getBoard();
+        ChessPosition kingWhitePos = findKing.findBWKing(board, TeamColor.WHITE);
+        ChessPosition kingBlackPos = findKing.findBWKing(board, TeamColor.BLACK);
+
+        if (teamColor == TeamColor.BLACK) {
+            inCheck = AllValidMovesCalculator.teamInCheck(kingBlackPos, allValidMovesArray);
+        } else if (teamColor == TeamColor.WHITE) {
+            inCheck = AllValidMovesCalculator.teamInCheck(kingWhitePos, allValidMovesArray);
+        }
+
+        return inCheck;
     }
 
     public Collection<ChessMove> checkMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not Implemented");
+        ChessPosition startPos = move.getStartPosition();
+        ChessPosition endPos = move.getEndPosition();
+        ChessPiece.PieceType promoPiece = move.getPromotionPiece();
+        int xEnd = endPos.getRow();
+        int yEnd = endPos.getColumn();
+        Collection<ChessMove> newValidMoves;
+        checkValidMovesArray.clear();
+        TeamColor teamColor = getBoard().getPiece(startPos).getTeamColor();
+        ChessPiece piece = getBoard().getPiece(startPos);
+
+        if (getBoard() != null && piece != null) {
+            if (xEnd <= 8 && xEnd >= 1 && yEnd <= 8 && yEnd >= 1) {
+                if (!allValidMovesArray.contains(move)) {
+                    checkValidMovesArray.addAll(AllValidMovesCalculator.pieceMoves(startPos, piece, getBoard()));
+                }
+            }
+        } else {
+            throw new InvalidMoveException();
+        }
+
+        if (checkValidMovesArray.contains(move)) {
+            newValidMoves = new ArrayList<>(checkPromotion(startPos, endPos, promoPiece, teamColor));
+            if (promoPiece == null) {
+                if (getBoard().getPiece(startPos).getTeamColor() != TeamColor.WHITE) {
+                    if (getBoard().getPiece(startPos).getTeamColor() != getTeamTurn()) {
+                        throw new InvalidMoveException();
+                    }
+                } else if (getBoard().getPiece(startPos).getTeamColor() != TeamColor.BLACK) {
+                    if (getBoard().getPiece(startPos).getTeamColor() != getTeamTurn()) {
+                        throw new InvalidMoveException();
+                    }
+                }
+            }
+        } else {
+            throw new InvalidMoveException();
+        }
+
+        return newValidMoves;
     }
 
     public Collection<ChessMove> checkPromotion(ChessPosition startPos, ChessPosition endPos, ChessPiece.PieceType promoPiece, TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> newValidMoves = new ArrayList<>();
+        ChessBoard copy = new ChessBoard(board);
+
+        for (ChessMove checkMove : checkValidMovesArray) {
+            ChessBoard board = getBoard();
+            ChessPiece piece = board.getPiece(startPos);
+
+            if (promoPiece != null) {
+                ChessPiece prPiece = new ChessPiece(teamColor, promoPiece);
+                board.addPiece(endPos, prPiece);
+            } else {
+                board.addPiece(endPos, piece);
+            }
+            if (isInCheck(piece.getTeamColor())) {
+                board.copyBoard(copy);
+            } else {
+                newValidMoves.add(checkMove);
+            }
+        }
+
+        return newValidMoves;
     }
 
     /**
@@ -258,5 +331,44 @@ public class ChessGame {
             this.board = copy;
         }
         return board;
+    }
+
+    @Override
+    public String toString() {
+        return "ChessGame{" +
+                "team=" + team +
+                ", board=" + board +
+                ", validPieceMoves=" + validPieceMoves +
+                ", validMoves=" + validMoves +
+                ", validBlackMoves=" + validBlackMoves +
+                ", validWhiteMoves=" + validWhiteMoves +
+                ", allBlackMoves=" + allBlackMoves +
+                ", allWhiteMoves=" + allWhiteMoves +
+                ", allValidMovesArray=" + allValidMovesArray +
+                ", allValidMovesArray2=" + allValidMovesArray2 +
+                ", checkValidMovesArray=" + checkValidMovesArray +
+                ", checkmateWhiteMoves=" + checkmateWhiteMoves +
+                ", checkmateBlackMoves=" + checkmateBlackMoves +
+                ", validMovesCounter=" + validMovesCounter +
+                ", whiteInCheck=" + whiteInCheck +
+                ", blackInCheck=" + blackInCheck +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessGame chessGame = (ChessGame) o;
+        return validMovesCounter == chessGame.validMovesCounter && whiteInCheck == chessGame.whiteInCheck && blackInCheck == chessGame.blackInCheck && team == chessGame.team && Objects.equals(board, chessGame.board) && Objects.equals(validPieceMoves, chessGame.validPieceMoves) && Objects.equals(validMoves, chessGame.validMoves) && Objects.equals(validBlackMoves, chessGame.validBlackMoves) && Objects.equals(validWhiteMoves, chessGame.validWhiteMoves) && Objects.equals(allBlackMoves, chessGame.allBlackMoves) && Objects.equals(allWhiteMoves, chessGame.allWhiteMoves) && Objects.equals(allValidMovesArray, chessGame.allValidMovesArray) && Objects.equals(allValidMovesArray2, chessGame.allValidMovesArray2) && Objects.equals(checkValidMovesArray, chessGame.checkValidMovesArray) && Objects.equals(checkmateWhiteMoves, chessGame.checkmateWhiteMoves) && Objects.equals(checkmateBlackMoves, chessGame.checkmateBlackMoves);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(team, board, validPieceMoves, validMoves, validBlackMoves, validWhiteMoves, allBlackMoves, allWhiteMoves, allValidMovesArray, allValidMovesArray2, checkValidMovesArray, checkmateWhiteMoves, checkmateBlackMoves, validMovesCounter, whiteInCheck, blackInCheck);
     }
 }
