@@ -368,11 +368,54 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        boolean inCheck = false;
+        boolean noMoves = false;
+        ChessPosition findKing = new ChessPosition(0,0);
+        ChessPosition whiteKing = findKing.findBWKing(getBoard(), TeamColor.WHITE);
+        ChessPosition blackKing = findKing.findBWKing(getBoard(), TeamColor.BLACK);
+        allValidMovesArray.clear();
+
+        allValidMovesArray.addAll(AllValidMovesCalculator.allValidMoves(getBoard()));
+        checkValidMoves2(getBoard(), allValidMovesArray);
+
+        if (teamColor == TeamColor.WHITE) {
+            if (AllValidMovesCalculator.teamInCheck(whiteKing, allValidMovesArray)) {
+                inCheck = true;
+            } else {
+                if (validWhiteMoves.isEmpty()) {
+                    noMoves = true;
+                }
+            }
+        } else if (teamColor == TeamColor.BLACK) {
+            if (AllValidMovesCalculator.teamInCheck(blackKing, allValidMovesArray)) {
+                inCheck = true;
+            } else {
+                if (validBlackMoves.isEmpty()) {
+                    noMoves = true;
+                }
+            }
+        }
+
+        return !inCheck && noMoves;
     }
 
     public void checkValidMoves2(ChessBoard board, Collection<ChessMove> possMoves) {
-        throw new RuntimeException("Not Implemented");
+        validBlackMoves.clear();
+        validWhiteMoves.clear();
+        ChessPosition findKing = new ChessPosition(0, 0);
+        ChessPosition whiteKing = findKing.findBWKing(getBoard(), TeamColor.WHITE);
+        ChessPosition blackKing = findKing.findBWKing(getBoard(), TeamColor.BLACK);
+
+        for (ChessMove move : possMoves) {
+            ChessPosition startPos = move.getStartPosition();
+            ChessPiece piece = board.getPiece(startPos);
+
+            if (piece.getTeamColor() == TeamColor.WHITE) {
+                validWhiteMoves.addAll(AllValidMovesCalculator.moveHelper2(piece, move, whiteKing, getBoard()));
+            } else if (piece.getTeamColor() == TeamColor.BLACK) {
+                validBlackMoves.addAll(AllValidMovesCalculator.moveHelper2(piece, move, blackKing, getBoard()));
+            }
+        }
     }
 
     /**
