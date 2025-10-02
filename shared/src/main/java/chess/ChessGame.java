@@ -100,6 +100,45 @@ public class ChessGame {
         return validPieceMoves;
     }
 
+    public Collection<ChessMove> checkValidMoves(ChessBoard board, TeamColor teamColor, Collection<ChessMove> possMoves) {
+        validMoves.clear();
+
+        if (isInCheck(teamColor)) {
+            ChessBoard copyBoard = new ChessBoard(board);
+            for (ChessMove move : possMoves) {
+                try {
+                    makeMove(move);
+                } catch (InvalidMoveException e){
+                    throw new RuntimeException(e);
+                }
+                if (isInCheck(teamColor)) {
+                    board.copyBoard(copyBoard);
+                } else {
+                    if (!validMoves.contains(move)) {
+                        validMoves.add(move);
+                        board.copyBoard(copyBoard);
+                    }
+                }
+            }
+        } else {
+            ChessBoard copyBoard = new ChessBoard(board);
+            for (ChessMove move : possMoves) {
+                try {
+                    makeMove(move);
+                    if (isInCheck(teamColor)) {
+                        board.copyBoard(copyBoard);
+                    } else if (!isInCheck(teamColor) && !validMoves.contains(move)) {
+                        validMoves.add(move);
+                        board.copyBoard(copyBoard);
+                    }
+                } catch (InvalidMoveException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return validMoves;
+    }
+
     /**
      * Makes a move in a chess game
      *
@@ -107,7 +146,44 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessPosition startPos = move.getStartPosition();
+        ChessPosition endPos = move.getEndPosition();
+        ChessPiece.PieceType promoPiece = move.getPromotionPiece();
+        int xEnd = endPos.getRow();
+        int yEnd = endPos.getColumn();
+        allValidMovesArray.clear();
+
+        if (getBoard() != null && getBoard().getPiece(startPos) != null) {
+            if (xEnd <= 8 && xEnd >= 1 && yEnd <=8 && yEnd >= 1) {
+                if (!allValidMovesArray.contains(move)) {
+                    if (validMovesCounter >= 1) {
+                        allValidMovesArray.addAll(AllValidMovesCalculator.allValidMoves(getBoard()));
+                    } else {
+                        allValidMovesArray.addAll(checkMove(move));
+                    }
+                }
+            }
+        } else {
+            throw new InvalidMoveException();
+        }
+
+        if (allValidMovesArray.contains(move)) {
+            ChessBoard board = getBoard();
+            ChessPiece piece = board.getPiece(startPos);
+
+            if (promoPiece != null) {
+                TeamColor teamColor = piece.getTeamColor();
+                ChessPiece promPiece = new ChessPiece(teamColor, promoPiece);
+                board.addPiece(endPos, promPiece);
+            } else {
+                board.addPiece(endPos, piece);
+            }
+
+            board.addPiece(startPos, null);
+            updateTeamTurn();
+        } else {
+            throw new InvalidMoveException();
+        }
     }
 
     /**
@@ -117,6 +193,14 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        throw new RuntimeException("Not implemented");
+    }
+
+    public Collection<ChessMove> checkMove(ChessMove move) throws InvalidMoveException {
+        throw new RuntimeException("Not Implemented");
+    }
+
+    public Collection<ChessMove> checkPromotion(ChessPosition startPos, ChessPosition endPos, ChessPiece.PieceType promoPiece, TeamColor teamColor) {
         throw new RuntimeException("Not implemented");
     }
 
@@ -130,6 +214,14 @@ public class ChessGame {
         throw new RuntimeException("Not implemented");
     }
 
+    public Collection<ChessMove> checkTeamCheckmate(ChessMove move, ChessPosition kingPos) {
+        throw new RuntimeException("Not Implemented");
+    }
+
+    public boolean checkCheckmate(Collection<ChessMove> validMovesArray, TeamColor teamColor) {
+        throw new RuntimeException("Not Implemented");
+    }
+
     /**
      * Determines if the given team is in stalemate, which here is defined as having
      * no valid moves while not in check.
@@ -139,6 +231,10 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         throw new RuntimeException("Not implemented");
+    }
+
+    public void checkValidMoves2(ChessBoard board, Collection<ChessMove> possMoves) {
+        throw new RuntimeException("Not Implemented");
     }
 
     /**
