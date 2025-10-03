@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class MovesCalculator {
-    private static final Collection<ChessMove> pieceMoves = new ArrayList<>();
+    private static final Collection<ChessMove> PIECEMOVES = new ArrayList<>();
 
     public static Collection<ChessMove> calculateKMoves(ChessBoard board, ChessPosition myPos, int[][] possMoves) {
-        pieceMoves.clear();
+        PIECEMOVES.clear();
         int x = myPos.getRow();
         int y = myPos.getColumn();
 
@@ -18,11 +18,11 @@ public class MovesCalculator {
             }
         }
 
-        return pieceMoves;
+        return PIECEMOVES;
     }
 
     public static Collection<ChessMove> calculateBRMoves(ChessBoard board, ChessPosition myPos, int strt, int stp, int nX, int nY, int x, int y) {
-        pieceMoves.clear();
+        PIECEMOVES.clear();
         int step = 1;
 
         if (strt > stp) {
@@ -41,16 +41,16 @@ public class MovesCalculator {
             }
         }
 
-        return pieceMoves;
+        return PIECEMOVES;
     }
 
     public static void getPieceMoves(ChessBoard board, ChessPosition myPos, ChessPosition newPos) {
         ChessPiece piece = board.getPiece(myPos);
 
         if (board.getPiece(newPos) == null) {
-            pieceMoves.add(new ChessMove(myPos, newPos, null));
+            PIECEMOVES.add(new ChessMove(myPos, newPos, null));
         } else if (board.getPiece(newPos) != null && board.getPiece(newPos).getTeamColor() != piece.getTeamColor()) {
-            pieceMoves.add(new ChessMove(myPos, newPos, null));
+            PIECEMOVES.add(new ChessMove(myPos, newPos, null));
         }
     }
 }

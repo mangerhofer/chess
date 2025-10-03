@@ -4,14 +4,14 @@ import java.util.Collection;
 import java.util.ArrayList;
 
 public class KnightMovesCalculator {
-    private static final Collection<ChessMove> knightMoves = new ArrayList<>();
+    private static final Collection<ChessMove> KNIGHTMOVES = new ArrayList<>();
 
     public static Collection<ChessMove> validKnightMoves(ChessBoard board, ChessPosition myPos) {
-        knightMoves.clear();
+        KNIGHTMOVES.clear();
         int[][] possMoves = {{1,2}, {2,1}, {1,-2}, {2,-1}, {-1,2}, {-2,1}, {-1,-2}, {-2,-1}};
 
-        knightMoves.addAll(MovesCalculator.calculateKMoves(board, myPos, possMoves));
+        KNIGHTMOVES.addAll(MovesCalculator.calculateKMoves(board, myPos, possMoves));
 
-        return knightMoves;
+        return KNIGHTMOVES;
     }
 }
