@@ -472,11 +472,28 @@ public class ChessGame {
             return false;
         }
         ChessGame chessGame = (ChessGame) o;
-        return validMovesCounter == chessGame.validMovesCounter && whiteInCheck == chessGame.whiteInCheck && blackInCheck == chessGame.blackInCheck && team == chessGame.team && Objects.equals(board, chessGame.board) && Objects.equals(validPieceMoves, chessGame.validPieceMoves) && Objects.equals(validMoves, chessGame.validMoves) && Objects.equals(validBlackMoves, chessGame.validBlackMoves) && Objects.equals(validWhiteMoves, chessGame.validWhiteMoves) && Objects.equals(allBlackMoves, chessGame.allBlackMoves) && Objects.equals(allWhiteMoves, chessGame.allWhiteMoves) && Objects.equals(allValidMovesArray, chessGame.allValidMovesArray) && Objects.equals(allValidMovesArray2, chessGame.allValidMovesArray2) && Objects.equals(checkValidMovesArray, chessGame.checkValidMovesArray) && Objects.equals(checkmateWhiteMoves, chessGame.checkmateWhiteMoves) && Objects.equals(checkmateBlackMoves, chessGame.checkmateBlackMoves);
+        return validMovesCounter == chessGame.validMovesCounter
+                && whiteInCheck == chessGame.whiteInCheck && blackInCheck == chessGame.blackInCheck
+                && team == chessGame.team
+                && Objects.equals(board, chessGame.board)
+                && Objects.equals(validPieceMoves, chessGame.validPieceMoves)
+                && Objects.equals(validMoves, chessGame.validMoves)
+                && Objects.equals(validBlackMoves, chessGame.validBlackMoves)
+                && Objects.equals(validWhiteMoves, chessGame.validWhiteMoves)
+                && Objects.equals(allBlackMoves, chessGame.allBlackMoves)
+                && Objects.equals(allWhiteMoves, chessGame.allWhiteMoves)
+                && Objects.equals(allValidMovesArray, chessGame.allValidMovesArray)
+                && Objects.equals(allValidMovesArray2, chessGame.allValidMovesArray2)
+                && Objects.equals(checkValidMovesArray, chessGame.checkValidMovesArray)
+                && Objects.equals(checkmateWhiteMoves, chessGame.checkmateWhiteMoves)
+                && Objects.equals(checkmateBlackMoves, chessGame.checkmateBlackMoves);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(team, board, validPieceMoves, validMoves, validBlackMoves, validWhiteMoves, allBlackMoves, allWhiteMoves, allValidMovesArray, allValidMovesArray2, checkValidMovesArray, checkmateWhiteMoves, checkmateBlackMoves, validMovesCounter, whiteInCheck, blackInCheck);
+        return Objects.hash(team, board, validPieceMoves, validMoves, validBlackMoves,
+                validWhiteMoves, allBlackMoves, allWhiteMoves, allValidMovesArray, allValidMovesArray2,
+                checkValidMovesArray, checkmateWhiteMoves, checkmateBlackMoves, validMovesCounter,
+                whiteInCheck, blackInCheck);
     }
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class RookMovesCalculator {
-    private static Collection<ChessMove> ROOKMOVES = new ArrayList<>();
+    private static final Collection<ChessMove> ROOKMOVES = new ArrayList<>();
 
     public static Collection<ChessMove> validRookMoves(ChessBoard board, ChessPosition myPos) {
         ROOKMOVES.clear();
