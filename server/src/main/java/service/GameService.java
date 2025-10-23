@@ -20,7 +20,7 @@ public class GameService {
 
     public GameData createGame(String authToken, String gameName) throws DataAccessException {
         if (gameName == null) {
-            throw new DataAccessException(400, "Bad request");
+            throw new DataAccessException(400, "Error: Bad request");
         }
         return gameInterface.createGame(gameName);
     }
@@ -45,7 +45,7 @@ public class GameService {
         }
 
         if (!found) {
-            throw new DataAccessException(400, "bad request");
+            throw new DataAccessException(400, "Error: bad request");
         }
 
 

@@ -26,8 +26,12 @@ public class UserService {
         UserData user = userInterface.getUser(username);
         var users = listUsers();
 
-        if (!users.contains(user)) {
-            throw new DataAccessException(401, "unauthorized");
+        if (username == null || password == null) {
+            throw new DataAccessException(400, "Error: unauthorized");
+        } else if (!users.contains(user)) {
+            throw new DataAccessException(401, "Error: unauthorized");
+        } else if (!user.password().equals(password)) {
+            throw new DataAccessException(401, "Error: unauthorized");
         } else {
             return authInterface.createAuthToken(user, username, password);
         }
@@ -36,7 +40,7 @@ public class UserService {
     public void logout(String authToken) throws DataAccessException {
         var tokenList = authInterface.getStringAuthTokens();
         if (!tokenList.contains(authToken)) {
-            throw new DataAccessException(401, "unauthorized");
+            throw new DataAccessException(401, "Error: unauthorized");
         } else {
             authInterface.deleteAuthToken(authToken);
         }

@@ -18,7 +18,7 @@ public class AuthDAO implements AuthInterface {
             authTokenMap.put(token, username);
             return token;
         } else {
-            throw new DataAccessException(401, "Invalid username or password");
+            throw new DataAccessException(400, "Error: Invalid username or password");
         }
     }
 
@@ -34,7 +34,7 @@ public class AuthDAO implements AuthInterface {
         }
 
         if (!found) {
-            throw new DataAccessException(401, "unauthorized");
+            throw new DataAccessException(401, "Error: unauthorized");
         }
 
         return tokenValue;
@@ -52,7 +52,7 @@ public class AuthDAO implements AuthInterface {
         }
 
         if (!found) {
-            throw new DataAccessException(401, "unauthorized");
+            throw new DataAccessException(400, "Error: unauthorized");
         }
 
 

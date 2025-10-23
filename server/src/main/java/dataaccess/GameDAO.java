@@ -49,24 +49,24 @@ public class GameDAO implements GameInterface {
         listGames.replace(gameID, gameResult, null);
 
         if (playerColor == null) {
-            throw new DataAccessException(400, "bad request");
+            throw new DataAccessException(400, "Error: bad request");
         } else {
             if (playerColor.equals("BLACK")) {
                 if (game.blackUsername() == null) {
                     game = game.setBlackUsername(username);
                     gameResult = gameResult.setBlackUsername(username);
                 } else {
-                    throw new DataAccessException(403, "already taken");
+                    throw new DataAccessException(403, "Error: already taken");
                 }
             } else if (playerColor.equals("WHITE")) {
                 if (game.whiteUsername() == null) {
                     game = game.setWhiteUsername(username);
                     gameResult = gameResult.setWhiteUsername(username);
                 } else {
-                    throw new DataAccessException(403, "already taken");
+                    throw new DataAccessException(403, "Error: already taken");
                 }
             } else {
-                throw new DataAccessException(400, "bad request");
+                throw new DataAccessException(400, "Error: bad request");
             }
         }
 
