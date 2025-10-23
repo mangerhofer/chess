@@ -62,8 +62,8 @@ public class Server {
             throw new DataAccessException(400, "Error: bad request, fields empty");
         } else if (!users.contains(user)) {
             ctx.status(200);
-            var RegisterResult = userService.register(user.username(), user.password(), user.email());
-            ctx.json(new Gson().toJson(RegisterResult));
+            var registerResult = userService.register(user.username(), user.password(), user.email());
+            ctx.json(new Gson().toJson(registerResult));
         } else {
             ctx.status(403);
             throw new DataAccessException(403, "Error: username already taken");
