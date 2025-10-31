@@ -13,6 +13,7 @@ public class Main {
                 port = Integer.parseInt(args[0]);
             }
 
+//            var service =
             port = new Server().run(port);
             System.out.printf("Server started on port %d%n", port);
             return;
