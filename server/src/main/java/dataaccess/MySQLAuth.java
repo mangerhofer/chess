@@ -31,7 +31,7 @@ public class MySQLAuth implements AuthInterface {
                 ps.setString(1, username);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        return 
+                        return
                     }
                 }
             }
