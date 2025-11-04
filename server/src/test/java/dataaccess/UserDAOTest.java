@@ -15,7 +15,12 @@ public class UserDAOTest {
     private UserInterface getDataAccess(Class<? extends UserInterface> databaseClass) throws DataAccessException {
         UserInterface ad;
 
-        ad = new UserDAO();
+        if (databaseClass.equals(MySQLUser.class)) {
+            ad = new MySQLUser();
+        } else {
+            ad = new UserDAO();
+        }
+
         ad.deleteAllUsers();
         return ad;
     }

@@ -3,15 +3,55 @@ package dataaccess;
 import com.google.gson.Gson;
 import model.UserData;
 
-import javax.xml.crypto.Data;
 import java.sql.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 
 public class MySQLUser implements UserInterface {
+
     public MySQLUser() throws DataAccessException {
         configureDatabase();
     }
 
+    public UserData createUser(String username, String password, String email) throws DataAccessException {
+        var statement = "INSERT INTO UserData (username, password, email, json) VALUES (?, ?, ?, ?)";
+        UserData user = new UserData(username, password, email);
+        String json = new Gson().toJson(user);
+        executeUpdate(statement, username, password, email, json);
+        return user;
+    }
+
+    public Collection<UserData> listUsers() throws DataAccessException {
+        var result = new LinkedHashMap<String, UserData>();
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT username, json FROM UserData";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        result.put(readUser(rs).username(), readUser(rs));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(500, "Unable to read data: %s");
+        }
+        return result.values();
+    }
+
     public UserData getUser(String username) throws DataAccessException {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT username, json FROM UserData WHERE username=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setString(1, username);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readUser(rs);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(500, "Unable to read data: %s");
+        }
         return null;
     }
 
@@ -32,7 +72,7 @@ public class MySQLUser implements UserInterface {
         return userData.setUsername(username);
     }
 
-    private int executeUpdate(String statement, Object... params) throws DataAccessException {
+    private void executeUpdate(String statement, Object... params) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 for (int i = 0; i < params.length; i++) {
@@ -42,7 +82,6 @@ public class MySQLUser implements UserInterface {
                 }
                 ps.executeUpdate();
 
-                return 0;
             }
         } catch (SQLException ex) {
             throw new DataAccessException(500, "Unable to update database: %s, %s");
