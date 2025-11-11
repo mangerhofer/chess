@@ -16,6 +16,7 @@ public class MySQLAuth implements AuthInterface {
 
     public AuthData createAuthToken(UserData user, String username, String password) throws DataAccessException {
         var statement = "INSERT INTO authData (authToken, username) VALUES (?, ?, ?)";
+        return null;
     }
 
     public AuthData getAuthToken(String username) throws DataAccessException {

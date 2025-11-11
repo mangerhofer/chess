@@ -24,8 +24,9 @@ public class UserServiceTest {
         AuthData result = USER_SERVICE.register(user.username(), user.password(), user.email());
 
         var users = USER_SERVICE.listUsers();
+        var authUsers = USER_SERVICE.listAuthTokens();
         assertEquals(1, users.size());
-        assertTrue(users.contains(user));
+        assertTrue(authUsers.contains(result));
     }
 
     @Test

@@ -5,6 +5,7 @@ import dataaccess.UserInterface;
 import dataaccess.AuthInterface;
 import model.AuthData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Collection;
 
@@ -23,17 +24,27 @@ public class UserService {
     }
 
     public AuthData login(String username, String password) throws DataAccessException {
-        UserData user = userInterface.getUser(username);
-        var users = listUsers();
-
         if (username == null || password == null) {
             throw new DataAccessException(400, "Error: unauthorized");
-        } else if (!users.contains(user)) {
-            throw new DataAccessException(401, "Error: unauthorized");
-        } else if (!user.password().equals(password)) {
-            throw new DataAccessException(401, "Error: unauthorized");
         } else {
-            return authInterface.createAuthToken(user, username, password);
+            UserData user = userInterface.getUser(username);
+
+            if (user == null) {
+                throw new DataAccessException(401, "Error: unauthorized");
+            }
+
+            var hashedPassword = user.password();
+            boolean validPassword = BCrypt.checkpw(password, hashedPassword);
+
+            var users = listUsers();
+
+            if (!users.contains(user)) {
+                throw new DataAccessException(401, "Error: unauthorized");
+            } else if (!validPassword) {
+                throw new DataAccessException(401, "Error: unauthorized");
+            } else {
+                return authInterface.createAuthToken(user, username, hashedPassword);
+            }
         }
     }
 
